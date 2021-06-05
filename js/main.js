@@ -62,6 +62,11 @@ function createPlayer(playerObj) {
     return $player;
 }
 
+// получение значения урона здоровью игрока
+function getHealthDamage(min = 1, max = 20) {
+    return Math.trunc((Math.random() * (max - min)) + min);
+}
+
 // отображение проигравшего
 function playerLose(playerName) {
     const $loseTitle = getDiv('loseTitle')(withClassName);
@@ -74,19 +79,19 @@ function changeHP(playerObj) {
     const selector = `.player${playerObj.player} .life`;
     const $pLife = document.querySelector(selector);
 
-    const newHP = playerObj.hp - 20;
+    const newHP = playerObj.hp - getHealthDamage();
     playerObj.hp = newHP < 0 ? 0 : newHP;
 
     $pLife.style.width = playerObj.hp + '%';
 
-    if (playerObj.hp < 0) {
+    if (playerObj.hp === 0) {
         $arenas.appendChild(playerLose(playerObj.name));
     }
 }
 
 // подписка на событие нажатия на кнопку Random
 $randomButton.addEventListener('click', function() {
-    // changeHP(player1);
+    changeHP(player1);
     changeHP(player2);
 });
 
