@@ -67,11 +67,12 @@ function getHealthDamage(min = 1, max = 20) {
     return Math.trunc((Math.random() * (max - min)) + min);
 }
 
-// отображение проигравшего
-function playerLose(playerName) {
+// отображение результатов поединка
+function showResult(message) {
     const $loseTitle = getDiv('loseTitle')(withClassName);
-    $loseTitle.innerText = `${playerName} lose`;
-    return $loseTitle;
+    $loseTitle.innerText = message;
+    $arenas.appendChild($loseTitle);
+    $randomButton.disabled = true;
 }
 
 // обработчик нажатия на кнопку Random
@@ -85,14 +86,28 @@ function changeHP(playerObj) {
     $pLife.style.width = playerObj.hp + '%';
 
     if (playerObj.hp === 0) {
-        $arenas.appendChild(playerLose(playerObj.name));
+        return false;
     }
+
+    return true;
 }
 
 // подписка на событие нажатия на кнопку Random
 $randomButton.addEventListener('click', function() {
-    changeHP(player1);
-    changeHP(player2);
+    const isAliveP1 = changeHP(player1);
+    const isAliveP2 = changeHP(player2);
+
+    switch (true) {
+        case isAliveP1 && (isAliveP2 === false):
+            showResult(`${player1.name} won!`);
+            break;
+        case isAliveP2 && (isAliveP1 === false):
+            showResult(`${player2.name} won!`);
+            break;
+        case (isAliveP1 === false) && (isAliveP2 === false):
+            showResult("It's a draw!");
+            break;
+    }
 });
 
 // отображение игроков
