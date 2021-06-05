@@ -62,12 +62,29 @@ function createPlayer(playerObj) {
     return $player;
 }
 
-// функция обратного вызова, обработчик нажатия на кнопку Random
+// отображение проигравшего
+function playerLose(playerName) {
+    const $loseTitle = getDiv('loseTitle')(withClassName);
+    $loseTitle.innerText = `${playerName} lose`;
+    return $loseTitle;
+}
 
+// обработчик нажатия на кнопку Random
+function changeHP(playerObj) {
+    const selector = `.player${playerObj.player} .life`;
+    const $pLife = document.querySelector(selector);
+    playerObj.hp -= 20;
+    $pLife.style.width = playerObj.hp + '%';
+
+    if (playerObj.hp < 0) {
+        $arenas.appendChild(playerLose(playerObj.name));
+    }
+}
 
 // подписка на событие нажатия на кнопку Random
 $randomButton.addEventListener('click', function() {
-    console.log('Кнопка!');
+    // changeHP(player1);
+    changeHP(player2);
 });
 
 // отображение игроков
