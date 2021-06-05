@@ -1,5 +1,7 @@
 // ссылка на игровое поле
 const $arenas = document.querySelector('.arenas');
+// ссылка на кнопку
+const $randomButton = document.querySelector('.button');
 
 // объекты игроков
 const player1 = {
@@ -48,7 +50,7 @@ function createPlayer(playerObj) {
     const $character = getDiv('character')(withClassName);
     const $img = getImg(playerObj.img)(withSrc);
 
-    $life.innerText = playerObj.hp + '%';
+    $life.style.width = playerObj.hp + '%';
     $name.innerText = playerObj.name;
 
     $progressbar.appendChild($life);
@@ -60,6 +62,14 @@ function createPlayer(playerObj) {
     return $player;
 }
 
-// исполнение
+// функция обратного вызова, обработчик нажатия на кнопку Random
+
+
+// подписка на событие нажатия на кнопку Random
+$randomButton.addEventListener('click', function() {
+    console.log('Кнопка!');
+});
+
+// отображение игроков
 $arenas.appendChild(createPlayer(player1));
 $arenas.appendChild(createPlayer(player2));
