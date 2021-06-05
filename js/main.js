@@ -1,7 +1,8 @@
 // объекты игроков
 const player1 = {
+    player: 1,
     name: 'SCORPION',
-    hp: 50,
+    hp: 100,
     img: 'http://reactmarathon-api.herokuapp.com/assets/scorpion.gif',
     weapon: ['weapon1', 'weapon2', 'weapon3'],
     attack: function() {
@@ -10,8 +11,9 @@ const player1 = {
 };
 
 const player2 = {
+    player: 2,
     name: 'SUB-ZERO',
-    hp: 80,
+    hp: 100,
     img: 'http://reactmarathon-api.herokuapp.com/assets/subzero.gif',
     weapon: ['weapon2', 'weapon3'],
     attack: function() {
