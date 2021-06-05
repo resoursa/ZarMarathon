@@ -75,7 +75,11 @@ function showResult(message) {
     $randomButton.disabled = true;
 }
 
-// обработчик нажатия на кнопку Random
+/**
+ *
+ * @param {Object} playerObj
+ * @returns {Boolean} true если игрок живой
+ */
 function changeHP(playerObj) {
     const selector = `.player${playerObj.player} .life`;
     const $pLife = document.querySelector(selector);
