@@ -1,3 +1,6 @@
+// ссылка на игровое поле
+const $arenas = document.querySelector('.arenas');
+
 // объекты игроков
 const player1 = {
     player: 1,
@@ -5,7 +8,7 @@ const player1 = {
     hp: 100,
     img: 'http://reactmarathon-api.herokuapp.com/assets/scorpion.gif',
     weapon: ['weapon1', 'weapon2', 'weapon3'],
-    attack: function() {
+    attack() {
         console.log(this.name + ' ' + 'Fight...');
     }
 };
@@ -16,15 +19,10 @@ const player2 = {
     hp: 100,
     img: 'http://reactmarathon-api.herokuapp.com/assets/subzero.gif',
     weapon: ['weapon2', 'weapon3'],
-    attack: function() {
+    attack() {
         console.log(this.name + ' ' + 'Fight...');
     }
 };
-
-/* console.log(player1);
-console.log(player1.attack());
-console.log(player2);
-console.log(player2.attack()); */
 
 // вспомогательные функции для создания игрока в DOM
 const buildElement = tag => attr => func => func(tag, attr);
@@ -42,8 +40,8 @@ const getDiv = buildElement('div');
 const getImg = buildElement('img');
 
 // функция создания игрока в DOM
-function createPlayer(playerId, playerObj) {
-    const $player = getDiv(playerId)(withClassName);
+function createPlayer(playerObj) {
+    const $player = getDiv(`player${playerObj.player}`)(withClassName);
     const $progressbar = getDiv('progressbar')(withClassName);
     const $life = getDiv('life')(withClassName);
     const $name = getDiv('name')(withClassName);
@@ -59,9 +57,9 @@ function createPlayer(playerId, playerObj) {
     $player.appendChild($progressbar);
     $player.appendChild($character);
 
-    const $root = document.querySelector('.arenas');
-    $root.appendChild($player);
+    return $player;
 }
 
-createPlayer('player1', player1);
-createPlayer('player2', player2);
+// исполнение
+$arenas.appendChild(createPlayer(player1));
+$arenas.appendChild(createPlayer(player2));
