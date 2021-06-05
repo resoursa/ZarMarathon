@@ -73,7 +73,10 @@ function playerLose(playerName) {
 function changeHP(playerObj) {
     const selector = `.player${playerObj.player} .life`;
     const $pLife = document.querySelector(selector);
-    playerObj.hp -= 20;
+
+    const newHP = playerObj.hp - 20;
+    playerObj.hp = newHP < 0 ? 0 : newHP;
+
     $pLife.style.width = playerObj.hp + '%';
 
     if (playerObj.hp < 0) {
