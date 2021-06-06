@@ -1,24 +1,11 @@
+import { getDiv, getImg, withClassName, withSrc } from './utilities.js';
+
 const arenas = (function () {
     // ссылки на элементы страницы
     const $arenas = document.querySelector('.arenas');
     const $randomButton = document.querySelector('.button');
     // ссылки на экземпляры игроков
     let player1, player2;
-
-    // вспомогательные функции для создания игрока в DOM
-    const buildElement = tag => attr => func => func(tag, attr);
-    const withClassName = (tag, className) => {
-        const $el = document.createElement(tag);
-        $el.classList.add(className);
-        return $el;
-    };
-    const withSrc = (tag, src) => {
-        const $el = document.createElement(tag);
-        $el.src = src;
-        return $el;
-    };
-    const getDiv = buildElement('div');
-    const getImg = buildElement('img');
 
     // отображение надписи по окончании игры
     function showResult(message) {
