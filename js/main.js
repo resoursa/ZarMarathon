@@ -1,30 +1,15 @@
+import * as players from './players.js';
+
+// объекты игроков
+const factory = new players.PlayerFactory();
+const player1 = factory.create(1, 'scorpion');
+const player2 = factory.create(2, 'subzero');
+
 // ссылка на игровое поле
 const $arenas = document.querySelector('.arenas');
 // ссылка на кнопку
 const $randomButton = document.querySelector('.button');
 
-// объекты игроков
-const player1 = {
-    player: 1,
-    name: 'SCORPION',
-    hp: 100,
-    img: 'http://reactmarathon-api.herokuapp.com/assets/scorpion.gif',
-    weapon: ['weapon1', 'weapon2', 'weapon3'],
-    attack() {
-        console.log(this.name + ' ' + 'Fight...');
-    }
-};
-
-const player2 = {
-    player: 2,
-    name: 'SUB-ZERO',
-    hp: 100,
-    img: 'http://reactmarathon-api.herokuapp.com/assets/subzero.gif',
-    weapon: ['weapon2', 'weapon3'],
-    attack() {
-        console.log(this.name + ' ' + 'Fight...');
-    }
-};
 
 // вспомогательные функции для создания игрока в DOM
 const buildElement = tag => attr => func => func(tag, attr);
