@@ -8,6 +8,16 @@ class Player {
         this.hp = 100;
     }
 
+    _getHealthDamage(min = 1, max = 20) {
+        return Math.trunc((Math.random() * (max - min)) + min);
+    }
+
+    updateHP() {
+        const healthDamage = this._getHealthDamage();
+        const newHP = this.hp - healthDamage;
+        this.hp = newHP < 0 ? 0 : newHP;
+    }
+
     attack() {
         console.log(this.name + ' ' + 'Fight...');
     }
