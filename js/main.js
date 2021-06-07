@@ -14,7 +14,10 @@ const player1 = {
     weapon: ['weapon1', 'weapon2', 'weapon3'],
     attack() {
         console.log(this.name + ' ' + 'Fight...');
-    }
+    },
+    changeHP: changeHP,
+    elHP: elHP,
+    renderHP: renderHP
 };
 
 const player2 = {
@@ -25,7 +28,10 @@ const player2 = {
     weapon: ['weapon2', 'weapon3'],
     attack() {
         console.log(this.name + ' ' + 'Fight...');
-    }
+    },
+    changeHP: changeHP,
+    elHP: elHP,
+    renderHP: renderHP
 };
 
 // функция создания игрока в DOM
@@ -67,21 +73,30 @@ function showResult(name) {
     $randomButton.disabled = true;
 }
 
-// изменение уровня здоровья
-function changeHP(playerObj) {
-    const selector = `.player${playerObj.player} .life`;
-    const $pLife = document.querySelector(selector);
+// определение элемента отображаещего кол-во здоровья
+function elHP() {
+    const selector = `.player${this.player} .life`;
+    return document.querySelector(selector);
+}
 
-    const newHP = playerObj.hp - getHealthDamage();
-    playerObj.hp = newHP < 0 ? 0 : newHP;
+// отображение количества здоровья
+function renderHP() {
+    const $life = this.elHP();
+    $life.style.width = this.hp + '%';
+}
 
-    $pLife.style.width = playerObj.hp + '%';
+// изменение количества здоровья
+function changeHP(healthDamage) {
+    const newHP = this.hp - healthDamage;
+    this.hp = newHP < 0 ? 0 : newHP;
 }
 
 // подписка на событие нажатия на кнопку Random
 $randomButton.addEventListener('click', function() {
-    changeHP(player1);
-    changeHP(player2);
+    player1.changeHP(getHealthDamage());
+    player2.changeHP(getHealthDamage());
+    player1.renderHP();
+    player2.renderHP();
 
     switch (true) {
         case player1.hp === 0 && player1.hp < player2.hp:
