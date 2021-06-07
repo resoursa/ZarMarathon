@@ -68,18 +68,19 @@ function getHealthDamage(min = 1, max = 20) {
 }
 
 // отображение результатов поединка
-function showResult(message) {
+function showResult(name) {
     const $loseTitle = getDiv('loseTitle')(withClassName);
-    $loseTitle.innerText = message;
+    if (name) {
+        $loseTitle.innerText = name + ' wins!';
+    } else {
+        $loseTitle.innerText = "It's a draw!";
+    }
+
     $arenas.appendChild($loseTitle);
     $randomButton.disabled = true;
 }
 
-/**
- *
- * @param {Object} playerObj
- * @returns {Boolean} true если игрок живой
- */
+// изменение уровня здоровья
 function changeHP(playerObj) {
     const selector = `.player${playerObj.player} .life`;
     const $pLife = document.querySelector(selector);
@@ -88,29 +89,20 @@ function changeHP(playerObj) {
     playerObj.hp = newHP < 0 ? 0 : newHP;
 
     $pLife.style.width = playerObj.hp + '%';
-
-    if (playerObj.hp === 0) {
-        return false;
-    }
-
-    return true;
 }
 
 // подписка на событие нажатия на кнопку Random
 $randomButton.addEventListener('click', function() {
-    const isAliveP1 = changeHP(player1);
-    const isAliveP2 = changeHP(player2);
+    changeHP(player1);
+    changeHP(player2);
 
     switch (true) {
-        case isAliveP1 && (isAliveP2 === false):
-            showResult(`${player1.name} won!`);
-            break;
-        case isAliveP2 && (isAliveP1 === false):
-            showResult(`${player2.name} won!`);
-            break;
-        case (isAliveP1 === false) && (isAliveP2 === false):
-            showResult("It's a draw!");
-            break;
+        case player1.hp === 0 && player1.hp < player2.hp:
+            return showResult(player2.name);
+        case player2.hp === 0 && player2.hp < player1.hp:
+            return showResult(player1.name);
+        case player1.hp === 0 && player2.hp === 0:
+            return showResult();
     }
 });
 
