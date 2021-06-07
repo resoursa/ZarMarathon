@@ -12,5 +12,6 @@ const withSrc = (tag, src) => {
 };
 const getDiv = buildElement('div');
 const getImg = buildElement('img');
+const getButton = buildElement('button');
 
-export { getDiv, getImg, withClassName, withSrc };
+export { getDiv, getImg, getButton, withClassName, withSrc };

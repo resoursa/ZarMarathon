@@ -1,8 +1,8 @@
-import { getDiv, getImg, withClassName, withSrc } from './utilities.js';
+import { getDiv, getImg, getButton, withClassName, withSrc } from './utilities.js';
 
 // ссылка на игровое поле
 const $arenas = document.querySelector('.arenas');
-// ссылка на кнопку
+// ссылка на кнопку Random
 const $randomButton = document.querySelector('.button');
 
 // объекты игроков
@@ -55,6 +55,17 @@ function createPlayer(playerObj) {
     return $player;
 }
 
+function createReloadButton() {
+    const $reloadWrap = getDiv('reloadWrap')(withClassName);
+    const $button = getButton('button')(withClassName);
+    $button.innerText = 'Restart';
+
+    $reloadWrap.appendChild($button);
+    $arenas.appendChild($reloadWrap);
+
+    return $button;
+}
+
 // получение значения урона здоровью игрока
 function getHealthDamage(min = 1, max = 20) {
     return Math.trunc((Math.random() * (max - min)) + min);
@@ -71,6 +82,12 @@ function showResult(name) {
 
     $arenas.appendChild($loseTitle);
     $randomButton.disabled = true;
+
+    // кнопка Reload
+    const $reloadButton = createReloadButton();
+    $reloadButton.addEventListener('click', function () {
+        window.location.reload();
+    });
 }
 
 // определение элемента отображаещего кол-во здоровья
@@ -111,3 +128,5 @@ $randomButton.addEventListener('click', function() {
 // отображение игроков
 $arenas.appendChild(createPlayer(player1));
 $arenas.appendChild(createPlayer(player2));
+
+
