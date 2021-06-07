@@ -128,5 +128,3 @@ $randomButton.addEventListener('click', function() {
 // отображение игроков
 $arenas.appendChild(createPlayer(player1));
 $arenas.appendChild(createPlayer(player2));
-
-
