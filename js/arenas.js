@@ -4,19 +4,40 @@ const arenas = (function () {
     // ссылки на элементы страницы
     const $arenas = document.querySelector('.arenas');
     const $randomButton = document.querySelector('.button');
-    // ссылки на экземпляры игроков
-    let player1, player2;
+
+    // <<<<<<<< Random Button <<<<<<<<<<<<<<<<<<
+    function switchOffRandomButton() {
+        $randomButton.disabled = true;
+    }
+
+    let _onClickRandomButton = null;
+    function setOnClickButton(action) {
+        _onClickRandomButton = action;
+    }
+    // >>>>>>>> Random Button >>>>>>>>>>>>>>>>>>>>>>
+
+    // <<<<<<<< Индикаторы здоровья <<<<<<<<<<<<<<<<
+    let $lifePlayer1, $lifePlayer2;
+
+    function updateProgressHP(playerId, hp) {
+        const value = hp + '%';
+        if (playerId === 1) {
+            $lifePlayer1.style.width = value;
+        } else {
+            $lifePlayer2.style.width = value;
+        }
+    }
+    // >>>>>>>> Индикаторы здоровья >>>>>>>>>>>>>>>>
 
     // отображение надписи по окончании игры
     function showResult(message) {
         const $loseTitle = getDiv('loseTitle')(withClassName);
         $loseTitle.innerText = message;
         $arenas.appendChild($loseTitle);
-        $randomButton.disabled = true;
     }
 
     // отображение игрока
-    function createPlayer(playerObj) {
+    function addPlayer(playerObj) {
         const $player = getDiv(`player${playerObj.player}`)(withClassName);
         const $progressbar = getDiv('progressbar')(withClassName);
         const $life = getDiv('life')(withClassName);
@@ -28,6 +49,7 @@ const arenas = (function () {
         $name.innerText = playerObj.name;
         $life.style.width = playerObj.hp + '%';
 
+        // разметка
         $progressbar.appendChild($life);
         $progressbar.appendChild($name);
         $character.appendChild($img);
@@ -36,35 +58,25 @@ const arenas = (function () {
         // вставка на страницу
         $arenas.appendChild($player);
 
-        // запоминаем ссылку на игрока
+        // запоминаем ссылку на здоровье игрока
         if (playerObj.player === 1) {
-            player1 = playerObj;
+            $lifePlayer1 = $life;
         } else {
-            player2 = playerObj;
+            $lifePlayer2 = $life;
         }
 
-        // подписываемся на событие клика на кнопке
-        $randomButton.addEventListener('click', function () {
-            if ($randomButton.disabled) { return;
-            }
-
-            // обновляем здоровье у игрока
-            playerObj.updateHP();
-            $life.style.width = playerObj.hp + '%';
-
-            // если у текущего игрока закончилось здоровье,
-            // то выиграл противоположный
-            if (playerObj.hp === 0) {
-                if (playerObj === player1) {
-                    showResult(`${player2.name} won!`);
-                } else {
-                    showResult(`${player1.name} won!`);
-                }
-            }
-        });
+        // подписка на событие нажатия на кнопку Random
+        if (_onClickRandomButton === false) {
+            throw new Error('Ссылка на обработчик click пустая');
+        }
+        $randomButton.addEventListener('click', _onClickRandomButton);
     }
 
-    return { createPlayer };
+    return { showPlayer: addPlayer,
+             switchOffRandomButton,
+             setOnClickButton,
+             updateProgressHP,
+             showResult, };
 })();
 
 export default arenas;
