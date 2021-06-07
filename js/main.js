@@ -55,6 +55,7 @@ function createPlayer(playerObj) {
     return $player;
 }
 
+// создание кнопки Reload
 function createReloadButton() {
     const $reloadWrap = getDiv('reloadWrap')(withClassName);
     const $button = getButton('button')(withClassName);
