@@ -1,6 +1,8 @@
+import { getDiv, getImg, getButton, withClassName, withSrc } from './utilities.js';
+
 // ссылка на игровое поле
 const $arenas = document.querySelector('.arenas');
-// ссылка на кнопку
+// ссылка на кнопку Random
 const $randomButton = document.querySelector('.button');
 
 // объекты игроков
@@ -12,7 +14,10 @@ const player1 = {
     weapon: ['weapon1', 'weapon2', 'weapon3'],
     attack() {
         console.log(this.name + ' ' + 'Fight...');
-    }
+    },
+    changeHP: changeHP,
+    elHP: elHP,
+    renderHP: renderHP
 };
 
 const player2 = {
@@ -23,23 +28,11 @@ const player2 = {
     weapon: ['weapon2', 'weapon3'],
     attack() {
         console.log(this.name + ' ' + 'Fight...');
-    }
+    },
+    changeHP: changeHP,
+    elHP: elHP,
+    renderHP: renderHP
 };
-
-// вспомогательные функции для создания игрока в DOM
-const buildElement = tag => attr => func => func(tag, attr);
-const withClassName = (tag, className) => {
-    const $el = document.createElement(tag);
-    $el.classList.add(className);
-    return $el;
-};
-const withSrc = (tag, src) => {
-    const $el = document.createElement(tag);
-    $el.src = src;
-    return $el;
-};
-const getDiv = buildElement('div');
-const getImg = buildElement('img');
 
 // функция создания игрока в DOM
 function createPlayer(playerObj) {
@@ -62,55 +55,74 @@ function createPlayer(playerObj) {
     return $player;
 }
 
+// создание кнопки Reload
+function createReloadButton() {
+    const $reloadWrap = getDiv('reloadWrap')(withClassName);
+    const $button = getButton('button')(withClassName);
+    $button.innerText = 'Restart';
+
+    $reloadWrap.appendChild($button);
+    $arenas.appendChild($reloadWrap);
+
+    return $button;
+}
+
 // получение значения урона здоровью игрока
 function getHealthDamage(min = 1, max = 20) {
     return Math.trunc((Math.random() * (max - min)) + min);
 }
 
 // отображение результатов поединка
-function showResult(message) {
+function showResult(name) {
     const $loseTitle = getDiv('loseTitle')(withClassName);
-    $loseTitle.innerText = message;
-    $arenas.appendChild($loseTitle);
-    $randomButton.disabled = true;
-}
-
-/**
- *
- * @param {Object} playerObj
- * @returns {Boolean} true если игрок живой
- */
-function changeHP(playerObj) {
-    const selector = `.player${playerObj.player} .life`;
-    const $pLife = document.querySelector(selector);
-
-    const newHP = playerObj.hp - getHealthDamage();
-    playerObj.hp = newHP < 0 ? 0 : newHP;
-
-    $pLife.style.width = playerObj.hp + '%';
-
-    if (playerObj.hp === 0) {
-        return false;
+    if (name) {
+        $loseTitle.innerText = name + ' wins!';
+    } else {
+        $loseTitle.innerText = "It's a draw!";
     }
 
-    return true;
+    $arenas.appendChild($loseTitle);
+    $randomButton.disabled = true;
+
+    // кнопка Reload
+    const $reloadButton = createReloadButton();
+    $reloadButton.addEventListener('click', function () {
+        window.location.reload();
+    });
+}
+
+// определение элемента отображаещего кол-во здоровья
+function elHP() {
+    const selector = `.player${this.player} .life`;
+    return document.querySelector(selector);
+}
+
+// отображение количества здоровья
+function renderHP() {
+    const $life = this.elHP();
+    $life.style.width = this.hp + '%';
+}
+
+// изменение количества здоровья
+function changeHP(healthDamage) {
+    const newHP = this.hp - healthDamage;
+    this.hp = newHP < 0 ? 0 : newHP;
 }
 
 // подписка на событие нажатия на кнопку Random
 $randomButton.addEventListener('click', function() {
-    const isAliveP1 = changeHP(player1);
-    const isAliveP2 = changeHP(player2);
+    player1.changeHP(getHealthDamage());
+    player2.changeHP(getHealthDamage());
+    player1.renderHP();
+    player2.renderHP();
 
     switch (true) {
-        case isAliveP1 && (isAliveP2 === false):
-            showResult(`${player1.name} won!`);
-            break;
-        case isAliveP2 && (isAliveP1 === false):
-            showResult(`${player2.name} won!`);
-            break;
-        case (isAliveP1 === false) && (isAliveP2 === false):
-            showResult("It's a draw!");
-            break;
+        case player1.hp === 0 && player1.hp < player2.hp:
+            return showResult(player2.name);
+        case player2.hp === 0 && player2.hp < player1.hp:
+            return showResult(player1.name);
+        case player1.hp === 0 && player2.hp === 0:
+            return showResult();
     }
 });
 
