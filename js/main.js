@@ -88,7 +88,7 @@ function createReloadButton() {
 }
 
 // получение значения урона здоровью игрока
-function getHealthDamage(min = 1, max = 20) {
+function getRandom(min = 1, max = 20) {
     return Math.trunc((Math.random() * (max - min)) + min);
 }
 
@@ -102,7 +102,7 @@ function showResult(name) {
     }
 
     $arenas.appendChild($loseTitle);
-    $randomButton.disabled = true;
+    // $randomButton.disabled = true;
 
     // кнопка Reload
     const $reloadButton = createReloadButton();
@@ -151,34 +151,65 @@ $arenas.appendChild(createPlayer(player1));
 $arenas.appendChild(createPlayer(player2));
 
 //
-function enemyAttack() {
-    const target = ATTACK[getHealthDamage(0, 3)];
-    const defence = ATTACK[getHealthDamage(0, 3)];
-    const force = getHealthDamage(1, HIT[target]);
+function getEnemyAttack() {
+    const target = ATTACK[getRandom(0, 3)];
+    const defence = ATTACK[getRandom(0, 3)];
+    const force = getRandom(1, HIT[target]);
 
     return { force, target, defence };
+}
+
+//
+function getUserAttack() {
+    const result = {};
+    [...$formFight].forEach(item => {
+        if (item.checked) {
+            if (item.name === 'hit') {
+                result.force = getRandom(1, HIT[item.value]);
+                result.target = item.value;
+            }
+            if (item.name === 'defence') {
+                result.defence = item.value;
+            }
+            item.checked = false;
+        }
+    });
+
+    return result;
+}
+
+//
+function getPlayersDamages(user, enemy) {
+    const result = {};
+    result.userDamage = user.defence !== enemy.target ? enemy.force : 0;
+    result.enemyDamage = enemy.defence !== user.target ? user.force : 0;
+
+    return result;
 }
 
 //
 $formFight.addEventListener('submit', function(event) {
     event.preventDefault();
 
-    const enemy = enemyAttack();
-    const me = {};
+    const enemy = getEnemyAttack();
+    const user = getUserAttack();
+    const damages = getPlayersDamages(user, enemy);
 
-    [...$formFight].forEach(item => {
-        if (item.checked) {
-            if (item.name === 'hit') {
-                me.force = getHealthDamage(1, HIT[item.value]);
-                me.target = item.value;
-            }
-            if (item.name === 'defence') {
-                me.defence = item.value;
-            }
-            item.checked = false;
-        }
-    });
+    player1.changeHP(damages.userDamage);
+    player2.changeHP(damages.enemyDamage);
+    player1.renderHP();
+    player2.renderHP();
 
-    console.log('### enemy ', enemy);
-    console.log('### me ', me);
+    switch (true) {
+        case player1.hp === 0 && player1.hp < player2.hp:
+            return showResult(player2.name);
+        case player2.hp === 0 && player2.hp < player1.hp:
+            return showResult(player1.name);
+        case player1.hp === 0 && player2.hp === 0:
+            return showResult();
+    }
+
+    // console.log('### enemy ', enemy);
+    // console.log('### user ', user);
+    // console.log('damages ', damages);
 });
