@@ -1,7 +1,19 @@
 // ссылка на игровое поле
 const $arenas = document.querySelector('.arenas');
+// ссылка на форму
+const $formFight = document.querySelector('.control');
 // ссылка на кнопку Random
-const $randomButton = document.querySelector('.button');
+// const $randomButton = document.querySelector('.button');
+
+//
+const HIT = {
+    head: 30,
+    body: 25,
+    foot: 20,
+};
+
+//
+const ATTACK = ['head', 'body', 'foot'];
 
 // объекты игроков
 const player1 = {
@@ -13,9 +25,9 @@ const player1 = {
     attack() {
         console.log(this.name + ' ' + 'Fight...');
     },
-    changeHP: changeHP,
-    elHP: elHP,
-    renderHP: renderHP
+    changeHP,
+    elHP,
+    renderHP
 };
 
 const player2 = {
@@ -27,9 +39,9 @@ const player2 = {
     attack() {
         console.log(this.name + ' ' + 'Fight...');
     },
-    changeHP: changeHP,
-    elHP: elHP,
-    renderHP: renderHP
+    changeHP,
+    elHP,
+    renderHP
 };
 
 // создание элемента для DOM
@@ -118,22 +130,55 @@ function changeHP(healthDamage) {
 }
 
 // подписка на событие нажатия на кнопку Random
-$randomButton.addEventListener('click', function() {
-    player1.changeHP(getHealthDamage());
-    player2.changeHP(getHealthDamage());
-    player1.renderHP();
-    player2.renderHP();
+// $randomButton.addEventListener('click', function() {
+//     player1.changeHP(getHealthDamage());
+//     player2.changeHP(getHealthDamage());
+//     player1.renderHP();
+//     player2.renderHP();
 
-    switch (true) {
-        case player1.hp === 0 && player1.hp < player2.hp:
-            return showResult(player2.name);
-        case player2.hp === 0 && player2.hp < player1.hp:
-            return showResult(player1.name);
-        case player1.hp === 0 && player2.hp === 0:
-            return showResult();
-    }
-});
+//     switch (true) {
+//         case player1.hp === 0 && player1.hp < player2.hp:
+//             return showResult(player2.name);
+//         case player2.hp === 0 && player2.hp < player1.hp:
+//             return showResult(player1.name);
+//         case player1.hp === 0 && player2.hp === 0:
+//             return showResult();
+//     }
+// });
 
 // отображение игроков
 $arenas.appendChild(createPlayer(player1));
 $arenas.appendChild(createPlayer(player2));
+
+//
+function enemyAttack() {
+    const target = ATTACK[getHealthDamage(0, 3)];
+    const defence = ATTACK[getHealthDamage(0, 3)];
+    const force = getHealthDamage(1, HIT[target]);
+
+    return { force, target, defence };
+}
+
+//
+$formFight.addEventListener('submit', function(event) {
+    event.preventDefault();
+
+    const enemy = enemyAttack();
+    const me = {};
+
+    [...$formFight].forEach(item => {
+        if (item.checked) {
+            if (item.name === 'hit') {
+                me.force = getHealthDamage(1, HIT[item.value]);
+                me.target = item.value;
+            }
+            if (item.name === 'defence') {
+                me.defence = item.value;
+            }
+            item.checked = false;
+        }
+    });
+
+    console.log('### enemy ', enemy);
+    console.log('### me ', me);
+});
