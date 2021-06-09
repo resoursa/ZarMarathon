@@ -1,5 +1,3 @@
-import { getDiv, getImg, getButton, withClassName, withSrc } from './utilities.js';
-
 // ссылка на игровое поле
 const $arenas = document.querySelector('.arenas');
 // ссылка на кнопку Random
@@ -34,17 +32,27 @@ const player2 = {
     renderHP: renderHP
 };
 
+// создание элемента для DOM
+function createElement(tag, className) {
+    const $tag = document.createElement(tag);
+    if (className) {
+        $tag.classList.add(className);
+    }
+    return $tag;
+}
+
 // функция создания игрока в DOM
 function createPlayer(playerObj) {
-    const $player = getDiv(`player${playerObj.player}`)(withClassName);
-    const $progressbar = getDiv('progressbar')(withClassName);
-    const $life = getDiv('life')(withClassName);
-    const $name = getDiv('name')(withClassName);
-    const $character = getDiv('character')(withClassName);
-    const $img = getImg(playerObj.img)(withSrc);
+    const $player = createElement('div', `player${playerObj.player}`);
+    const $progressbar = createElement('div', 'progressbar');
+    const $life = createElement('div', 'life');
+    const $name = createElement('div', 'name');
+    const $character = createElement('div', 'character');
+    const $img = createElement('img');
 
     $life.style.width = playerObj.hp + '%';
     $name.innerText = playerObj.name;
+    $img.src = playerObj.img;
 
     $progressbar.appendChild($life);
     $progressbar.appendChild($name);
@@ -57,8 +65,8 @@ function createPlayer(playerObj) {
 
 // создание кнопки Reload
 function createReloadButton() {
-    const $reloadWrap = getDiv('reloadWrap')(withClassName);
-    const $button = getButton('button')(withClassName);
+    const $reloadWrap = createElement('div', 'reloadWrap');
+    const $button = createElement('div', 'button');
     $button.innerText = 'Restart';
 
     $reloadWrap.appendChild($button);
@@ -74,7 +82,7 @@ function getHealthDamage(min = 1, max = 20) {
 
 // отображение результатов поединка
 function showResult(name) {
-    const $loseTitle = getDiv('loseTitle')(withClassName);
+    const $loseTitle = createElement('div', 'loseTitle');
     if (name) {
         $loseTitle.innerText = name + ' wins!';
     } else {
