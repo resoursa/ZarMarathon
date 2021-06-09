@@ -41,7 +41,7 @@ function createElement(tag, className) {
     return $tag;
 }
 
-// функция создания игрока в DOM
+// создание игрока в DOM
 function createPlayer(playerObj) {
     const $player = createElement('div', `player${playerObj.player}`);
     const $progressbar = createElement('div', 'progressbar');
