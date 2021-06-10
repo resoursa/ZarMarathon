@@ -168,7 +168,7 @@ function getPlayersDamages(user, enemy) {
 }
 
 // отображение результатов после единичн. атаки
-function showPlayerDamages(damages) {
+function showPlayersDamages(damages) {
     player1.changeHP(damages.userDamage);
     player2.changeHP(damages.enemyDamage);
     player1.renderHP();
@@ -194,6 +194,6 @@ $formFight.addEventListener('submit', function(event) {
     const user = getUserAttack();
     const enemy = getEnemyAttack();
     const damages = getPlayersDamages(user, enemy);
-    showPlayerDamages(damages);
+    showPlayersDamages(damages);
     checkForEndGame();
 });
