@@ -176,7 +176,7 @@ function showPlayersDamages(damages) {
 }
 
 // проверка значений здоровья на окончание игры
-function checkForEndGame(params) {
+function checkForEndGame() {
     switch (true) {
         case player1.hp === 0 && player1.hp < player2.hp:
             return showResult(player2.name);
