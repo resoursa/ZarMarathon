@@ -2,17 +2,15 @@
 const $arenas = document.querySelector('.arenas');
 // ссылка на форму
 const $formFight = document.querySelector('.control');
-// ссылка на кнопку Random
-// const $randomButton = document.querySelector('.button');
 
-//
+// предельные значения урона
 const HIT = {
     head: 30,
     body: 25,
     foot: 20,
 };
 
-//
+// названия целей атак
 const ATTACK = ['head', 'body', 'foot'];
 
 // объекты игроков
@@ -102,7 +100,6 @@ function showResult(name) {
     }
 
     $arenas.appendChild($loseTitle);
-    // $randomButton.disabled = true;
 
     // кнопка Reload
     const $reloadButton = createReloadButton();
@@ -129,28 +126,11 @@ function changeHP(healthDamage) {
     this.hp = newHP < 0 ? 0 : newHP;
 }
 
-// подписка на событие нажатия на кнопку Random
-// $randomButton.addEventListener('click', function() {
-//     player1.changeHP(getHealthDamage());
-//     player2.changeHP(getHealthDamage());
-//     player1.renderHP();
-//     player2.renderHP();
-
-//     switch (true) {
-//         case player1.hp === 0 && player1.hp < player2.hp:
-//             return showResult(player2.name);
-//         case player2.hp === 0 && player2.hp < player1.hp:
-//             return showResult(player1.name);
-//         case player1.hp === 0 && player2.hp === 0:
-//             return showResult();
-//     }
-// });
-
 // отображение игроков
 $arenas.appendChild(createPlayer(player1));
 $arenas.appendChild(createPlayer(player2));
 
-//
+// получение объекта вражеской атаки
 function getEnemyAttack() {
     const target = ATTACK[getRandom(0, 3)];
     const defence = ATTACK[getRandom(0, 3)];
@@ -159,10 +139,10 @@ function getEnemyAttack() {
     return { force, target, defence };
 }
 
-//
+// получение объекта пользовательской атаки
 function getUserAttack() {
     const result = {};
-    [...$formFight].forEach(item => {
+    for (const item of $formFight) {
         if (item.checked) {
             if (item.name === 'hit') {
                 result.force = getRandom(1, HIT[item.value]);
@@ -173,12 +153,12 @@ function getUserAttack() {
             }
             item.checked = false;
         }
-    });
+    }
 
     return result;
 }
 
-//
+// получение объекта конечных значений урона польз. и врага
 function getPlayersDamages(user, enemy) {
     const result = {};
     result.userDamage = user.defence !== enemy.target ? enemy.force : 0;
@@ -187,19 +167,16 @@ function getPlayersDamages(user, enemy) {
     return result;
 }
 
-//
-$formFight.addEventListener('submit', function(event) {
-    event.preventDefault();
-
-    const enemy = getEnemyAttack();
-    const user = getUserAttack();
-    const damages = getPlayersDamages(user, enemy);
-
+// отображение результатов после единичн. атаки
+function showPlayerDamages(damages) {
     player1.changeHP(damages.userDamage);
     player2.changeHP(damages.enemyDamage);
     player1.renderHP();
     player2.renderHP();
+}
 
+// проверка значений здоровья на окончание игры
+function checkForEndGame(params) {
     switch (true) {
         case player1.hp === 0 && player1.hp < player2.hp:
             return showResult(player2.name);
@@ -208,8 +185,15 @@ $formFight.addEventListener('submit', function(event) {
         case player1.hp === 0 && player2.hp === 0:
             return showResult();
     }
+}
 
-    // console.log('### enemy ', enemy);
-    // console.log('### user ', user);
-    // console.log('damages ', damages);
+// обработка клика по кнопке Fight
+$formFight.addEventListener('submit', function(event) {
+    event.preventDefault();
+
+    const user = getUserAttack();
+    const enemy = getEnemyAttack();
+    const damages = getPlayersDamages(user, enemy);
+    showPlayerDamages(damages);
+    checkForEndGame();
 });
