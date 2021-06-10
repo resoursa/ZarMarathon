@@ -20,9 +20,7 @@ const player1 = {
     hp: 100,
     img: 'http://reactmarathon-api.herokuapp.com/assets/scorpion.gif',
     weapon: ['weapon1', 'weapon2', 'weapon3'],
-    attack() {
-        console.log(this.name + ' ' + 'Fight...');
-    },
+    attack,
     changeHP,
     elHP,
     renderHP
@@ -34,13 +32,16 @@ const player2 = {
     hp: 100,
     img: 'http://reactmarathon-api.herokuapp.com/assets/subzero.gif',
     weapon: ['weapon2', 'weapon3'],
-    attack() {
-        console.log(this.name + ' ' + 'Fight...');
-    },
+    attack,
     changeHP,
     elHP,
     renderHP
 };
+
+// атака
+function attack() {
+    console.log(this.name + ' ' + 'Fight...');
+}
 
 // создание элемента для DOM
 function createElement(tag, className) {
