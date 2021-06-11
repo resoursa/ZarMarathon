@@ -1,9 +1,11 @@
-import logs from './logs.js';
+import { maxEndIndex, maxHitIndex, maxDefenceIndex, getLogString} from './logs.js';
 
 // ссылка на игровое поле
 const $arenas = document.querySelector('.arenas');
 // ссылка на форму
 const $formFight = document.querySelector('.control');
+//
+const $chat = document.querySelector('.chat');
 
 // предельные значения урона
 const HIT = {
@@ -129,9 +131,7 @@ function changeHP(healthDamage) {
     this.hp = newHP < 0 ? 0 : newHP;
 }
 
-// отображение игроков
-$arenas.appendChild(createPlayer(player1));
-$arenas.appendChild(createPlayer(player2));
+
 
 // получение объекта вражеской атаки
 function getEnemyAttack() {
@@ -170,6 +170,29 @@ function getPlayersDamages(user, enemy) {
     return result;
 }
 
+// отображение логов игры
+function showLogs(type, attacker, defender) {
+    const date = new Date();
+    const time = `${date.getHours()}:${date.getMinutes()}`;
+
+    let index = 0;
+    switch (type) {
+        case 'end':
+            index = getRandom(index, maxEndIndex);
+            break;
+        case 'hit':
+            index = getRandom(index, maxHitIndex);
+            break;
+        case 'defence':
+            index = getRandom(index, maxDefenceIndex);
+            break;
+    }
+
+    const log = getLogString(type, index, time, attacker, defender);
+    const el = `<p>${log}</p>`;
+    $chat.insertAdjacentHTML('afterbegin', el);
+}
+
 // отображение результатов после единичн. атаки
 function showPlayersDamages(damages) {
     player1.changeHP(damages.userDamage);
@@ -200,3 +223,9 @@ $formFight.addEventListener('submit', function(event) {
     showPlayersDamages(damages);
     checkForEndGame();
 });
+
+// отображение игроков
+$arenas.appendChild(createPlayer(player1));
+$arenas.appendChild(createPlayer(player2));
+
+showLogs('start', player1, player2);

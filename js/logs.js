@@ -38,4 +38,58 @@ const logs = {
     draw: 'Ничья - это тоже победа!'
 };
 
-export default logs;
+const maxEndIndex = logs['end'].length - 1;
+const maxHitIndex = logs['hit'].length - 1;
+const maxDefenceIndex = logs['defence'].length - 1;
+
+function getStartLog(time, user, enemy) {
+    const log = logs['start'].replace('[time]', time)
+                            .replace('[player1]', user.name)
+                            .replace('[player2]', enemy.name);
+    return log;
+}
+
+function getEndLog(index, time, attacker, defender) {
+    return 'end log';
+}
+
+function getHitLog(index, time, attacker, defender) {
+    return 'hit log';
+}
+
+function getDefenceLog(index, time, attacker, defender) {
+    return 'defence log';
+}
+
+function getLogString(type = 'start',
+                        index = 0,
+                        time = '00:00',
+                        attacker = 'player1',
+                        defender = 'player2') {
+    let result = '';
+
+    switch (type) {
+        case 'start':
+            result = getStartLog(time, attacker, defender);
+            break;
+        case 'end':
+            result = getEndLog(index, time, attacker, defender);
+            break;
+        case 'hit':
+            result = getHitLog(index, time, attacker, defender);
+            break;
+        case 'defence':
+            result = getDefenceLog(index, time, attacker, defender);
+            break;
+        case 'draw':
+            result = logs['draw'];
+            break;
+        default:
+            result = 'unknown key of logs';
+            break;
+    }
+
+    return result;
+}
+
+export { maxEndIndex, maxHitIndex, maxDefenceIndex, getLogString};
