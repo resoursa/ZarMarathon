@@ -1,3 +1,5 @@
+import logs from './logs.js';
+
 // ссылка на игровое поле
 const $arenas = document.querySelector('.arenas');
 // ссылка на форму
