@@ -42,23 +42,31 @@ const maxEndIndex = logs['end'].length - 1;
 const maxHitIndex = logs['hit'].length - 1;
 const maxDefenceIndex = logs['defence'].length - 1;
 
-function getStartLog(time, user, enemy) {
-    const log = logs['start'].replace('[time]', time)
+function getStartLog(type, time, user, enemy) {
+    const log = logs[type].replace('[time]', time)
                             .replace('[player1]', user.name)
                             .replace('[player2]', enemy.name);
     return log;
 }
 
-function getEndLog(index, time, attacker, defender) {
-    return 'end log';
+function getEndLog(type, index, attacker, defender) {
+    const log = logs[type][index].replace('[playerWins]', attacker.name)
+                                .replace('[playerLose]', defender.name);
+    return log;
 }
 
-function getHitLog(index, time, attacker, defender) {
-    return 'hit log';
+function getHitLog(type, index, time, attacker, defender) {
+    let log = logs[type][index].replace('[playerKick]', attacker.name)
+                            .replace('[playerDefence]', defender.name);
+    log = `${time} ${log}`;
+    return log;
 }
 
-function getDefenceLog(index, time, attacker, defender) {
-    return 'defence log';
+function getDefenceLog(type, index, time, attacker, defender) {
+    let log = logs[type][index].replace('[playerKick]', attacker.name)
+                            .replace('[playerDefence]', defender.name);
+    log = `${time} ${log}`;
+    return log;
 }
 
 function getLogString(type = 'start',
@@ -70,22 +78,22 @@ function getLogString(type = 'start',
 
     switch (type) {
         case 'start':
-            result = getStartLog(time, attacker, defender);
+            result = getStartLog(type, time, attacker, defender);
             break;
         case 'end':
-            result = getEndLog(index, time, attacker, defender);
+            result = getEndLog(type, index, attacker, defender);
             break;
         case 'hit':
-            result = getHitLog(index, time, attacker, defender);
+            result = getHitLog(type, index, time, attacker, defender);
             break;
         case 'defence':
-            result = getDefenceLog(index, time, attacker, defender);
+            result = getDefenceLog(type, index, time, attacker, defender);
             break;
         case 'draw':
             result = logs['draw'];
             break;
         default:
-            result = 'unknown key of logs';
+            result = 'a unknown key of logs';
             break;
     }
 

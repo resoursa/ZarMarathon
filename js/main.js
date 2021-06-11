@@ -226,6 +226,7 @@ $formFight.addEventListener('submit', function(event) {
     const user = getUserAttack();
     const enemy = getEnemyAttack();
     const damages = getPlayersDamages(user, enemy);
+    // showPlayersLogs(damages);
     showPlayersDamages(damages);
     checkForEndGame();
 });
