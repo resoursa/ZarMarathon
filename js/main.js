@@ -170,10 +170,16 @@ function getPlayersDamages(user, enemy) {
     return result;
 }
 
+// получение значения текущего времени
+function getCurrentTime() {
+    const zeroPrefix = value => value.toString().length > 1 ? value : `0${value}`;
+    const date = new Date();
+    return `${zeroPrefix(date.getHours())}:${zeroPrefix(date.getMinutes())}`;
+}
+
 // отображение логов игры
 function showLogs(type, attacker, defender) {
-    const date = new Date();
-    const time = `${date.getHours()}:${date.getMinutes()}`;
+    const time = getCurrentTime();
 
     let index = 0;
     switch (type) {
