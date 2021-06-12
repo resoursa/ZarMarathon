@@ -18,7 +18,7 @@ const HIT = {
 const ATTACK = ['head', 'body', 'foot'];
 
 // объекты игроков
-const player1 = {
+const userPlayer = {
     player: 1,
     name: 'SCORPION',
     hp: 100,
@@ -30,7 +30,7 @@ const player1 = {
     renderHP
 };
 
-const player2 = {
+const enemyPlayer = {
     player: 2,
     name: 'SUB-ZERO',
     hp: 100,
@@ -159,10 +159,10 @@ function getCurrentTime() {
 
 // отображение результатов после единичн. атаки
 function showPlayersDamages(damages) {
-    player1.changeHP(damages.userDamage);
-    player2.changeHP(damages.enemyDamage);
-    player1.renderHP();
-    player2.renderHP();
+    userPlayer.changeHP(damages.userDamage);
+    enemyPlayer.changeHP(damages.enemyDamage);
+    userPlayer.renderHP();
+    enemyPlayer.renderHP();
 }
 
 // отображение логов игры
@@ -191,7 +191,7 @@ function showLogs(type, attacker, defender) {
 function showResult(playerWinner, playerLoser) {
     // отображаем надпись с результатом
     const $loseTitle = createElement('div', 'loseTitle');
-    debugger;
+    
     if (playerWinner) {
         $loseTitle.innerText = playerWinner.name + ' wins!';
         showLogs('end', playerWinner, playerLoser);
@@ -211,25 +211,25 @@ function showResult(playerWinner, playerLoser) {
 // проверка значений здоровья на окончание игры
 function checkStateGame(damages) {
     switch (true) {
-        case damages.userDamage >= damages.enemyDamage:
-            showLogs('hit', player2, player1);
+        case damages.userDamage > damages.enemyDamage:
+            showLogs('hit', enemyPlayer, userPlayer);
             // showLogs('defence', player1, player2);
             break;
-        case damages.userDamage <= damages.enemyDamage:
-            showLogs('hit', player1, player2);
+        case damages.userDamage < damages.enemyDamage:
+            showLogs('hit', userPlayer, enemyPlayer);
             // showLogs('defence', player2, player1);
             break;
     }
 
     switch (true) {
-        case player1.hp === 0 && player2.hp === 0:
+        case userPlayer.hp === 0 && enemyPlayer.hp === 0:
             showResult();
             break;
-        case player1.hp === 0 && player2.hp > 0:
-            showResult(player2, player1);
+        case userPlayer.hp === 0 && enemyPlayer.hp > 0:
+            showResult(enemyPlayer, userPlayer);
             break;
-        case player2.hp === 0 && player1.hp > 0:
-            showResult(player1, player2);
+        case enemyPlayer.hp === 0 && userPlayer.hp > 0:
+            showResult(userPlayer, enemyPlayer);
             break;
     }
 }
@@ -246,7 +246,7 @@ $formFight.addEventListener('submit', function(event) {
 });
 
 // отображение игроков
-$arenas.appendChild(createPlayer(player1));
-$arenas.appendChild(createPlayer(player2));
+$arenas.appendChild(createPlayer(userPlayer));
+$arenas.appendChild(createPlayer(enemyPlayer));
 
-showLogs('start', player1, player2);
+showLogs('start', userPlayer, enemyPlayer);
