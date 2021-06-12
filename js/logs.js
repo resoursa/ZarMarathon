@@ -58,7 +58,7 @@ function getEndLog(type, index, attacker, defender) {
 function getHitLog(type, index, time, attacker, defender) {
     let log = logs[type][index].replace('[playerKick]', attacker.name)
                             .replace('[playerDefence]', defender.name);
-    log = `${time} ${log}`;
+    log = `${time} ${log} ${defender.lastDamage} ${defender.toStringHP()}`;
     return log;
 }
 
@@ -69,6 +69,7 @@ function getDefenceLog(type, index, time, attacker, defender) {
     return log;
 }
 
+// формирование строки лога для отображения
 function getLogString(type, index, time, attacker, defender) {
     let result = '';
 

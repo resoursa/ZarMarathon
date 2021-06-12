@@ -22,27 +22,31 @@ const userPlayer = {
     player: 1,
     name: 'SCORPION',
     hp: 100,
+    lastDamage: 0,
     img: 'http://reactmarathon-api.herokuapp.com/assets/scorpion.gif',
     weapon: ['weapon1', 'weapon2', 'weapon3'],
     attack,
     changeHP,
     elHP,
-    renderHP
+    renderHP,
+    toStringHP
 };
 
 const enemyPlayer = {
     player: 2,
     name: 'SUB-ZERO',
     hp: 100,
+    lastDamage: 0,
     img: 'http://reactmarathon-api.herokuapp.com/assets/subzero.gif',
     weapon: ['weapon2', 'weapon3'],
     attack,
     changeHP,
     elHP,
-    renderHP
+    renderHP,
+    toStringHP
 };
 
-// атака
+// атака игрока
 function attack() {
     console.log(this.name + ' ' + 'Fight...');
 }
@@ -95,22 +99,28 @@ function getRandom(min = 1, max = 20) {
     return Math.trunc((Math.random() * (max - min)) + min);
 }
 
-// определение элемента отображаещего кол-во здоровья
+// определение элемента отображаещего кол-во здоровья игрока
 function elHP() {
     const selector = `.player${this.player} .life`;
     return document.querySelector(selector);
 }
 
-// отображение количества здоровья
+// отображение количества здоровья игрока
 function renderHP() {
     const $life = this.elHP();
     $life.style.width = this.hp + '%';
 }
 
-// изменение количества здоровья
+// вывод здоровья игрока в форме [hp/100]
+function toStringHP() {
+ return `[${this.hp}/100]`;
+}
+
+// изменение количества здоровья игрока
 function changeHP(healthDamage) {
     const newHP = this.hp - healthDamage;
     this.hp = newHP < 0 ? 0 : newHP;
+    this.lastDamage = -healthDamage;
 }
 
 // получение объекта вражеской атаки
@@ -189,9 +199,9 @@ function showLogs(type, attacker, defender) {
 
 // отображение результатов поединка
 function showResult(playerWinner, playerLoser) {
-    // отображаем надпись с результатом
     const $loseTitle = createElement('div', 'loseTitle');
-    
+
+    // отображаем надпись с результатом
     if (playerWinner) {
         $loseTitle.innerText = playerWinner.name + ' wins!';
         showLogs('end', playerWinner, playerLoser);
@@ -213,11 +223,9 @@ function checkStateGame(damages) {
     switch (true) {
         case damages.userDamage > damages.enemyDamage:
             showLogs('hit', enemyPlayer, userPlayer);
-            // showLogs('defence', player1, player2);
             break;
         case damages.userDamage < damages.enemyDamage:
             showLogs('hit', userPlayer, enemyPlayer);
-            // showLogs('defence', player2, player1);
             break;
     }
 
@@ -248,5 +256,5 @@ $formFight.addEventListener('submit', function(event) {
 // отображение игроков
 $arenas.appendChild(createPlayer(userPlayer));
 $arenas.appendChild(createPlayer(enemyPlayer));
-
+// начальная строка в лог
 showLogs('start', userPlayer, enemyPlayer);
