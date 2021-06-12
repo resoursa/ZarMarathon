@@ -69,11 +69,7 @@ function getDefenceLog(type, index, time, attacker, defender) {
     return log;
 }
 
-function getLogString(type = 'start',
-                        index = 0,
-                        time = '00:00',
-                        attacker = 'player1',
-                        defender = 'player2') {
+function getLogString(type, index, time, attacker, defender) {
     let result = '';
 
     switch (type) {

@@ -95,24 +95,6 @@ function getRandom(min = 1, max = 20) {
     return Math.trunc((Math.random() * (max - min)) + min);
 }
 
-// отображение результатов поединка
-function showResult(name) {
-    const $loseTitle = createElement('div', 'loseTitle');
-    if (name) {
-        $loseTitle.innerText = name + ' wins!';
-    } else {
-        $loseTitle.innerText = "It's a draw!";
-    }
-
-    $arenas.appendChild($loseTitle);
-
-    // кнопка Reload
-    const $reloadButton = createReloadButton();
-    $reloadButton.addEventListener('click', function () {
-        window.location.reload();
-    });
-}
-
 // определение элемента отображаещего кол-во здоровья
 function elHP() {
     const selector = `.player${this.player} .life`;
@@ -130,8 +112,6 @@ function changeHP(healthDamage) {
     const newHP = this.hp - healthDamage;
     this.hp = newHP < 0 ? 0 : newHP;
 }
-
-
 
 // получение объекта вражеской атаки
 function getEnemyAttack() {
@@ -177,6 +157,14 @@ function getCurrentTime() {
     return `${zeroPrefix(date.getHours())}:${zeroPrefix(date.getMinutes())}`;
 }
 
+// отображение результатов после единичн. атаки
+function showPlayersDamages(damages) {
+    player1.changeHP(damages.userDamage);
+    player2.changeHP(damages.enemyDamage);
+    player1.renderHP();
+    player2.renderHP();
+}
+
 // отображение логов игры
 function showLogs(type, attacker, defender) {
     const time = getCurrentTime();
@@ -199,23 +187,50 @@ function showLogs(type, attacker, defender) {
     $chat.insertAdjacentHTML('afterbegin', el);
 }
 
-// отображение результатов после единичн. атаки
-function showPlayersDamages(damages) {
-    player1.changeHP(damages.userDamage);
-    player2.changeHP(damages.enemyDamage);
-    player1.renderHP();
-    player2.renderHP();
+// отображение результатов поединка
+function showResult(playerWinner, playerLoser) {
+    // отображаем надпись с результатом
+    const $loseTitle = createElement('div', 'loseTitle');
+    debugger;
+    if (playerWinner) {
+        $loseTitle.innerText = playerWinner.name + ' wins!';
+        showLogs('end', playerWinner, playerLoser);
+    } else {
+        $loseTitle.innerText = "It's a draw!";
+        showLogs('draw', undefined, undefined);
+    }
+    $arenas.appendChild($loseTitle);
+
+    // кнопка Reload
+    const $reloadButton = createReloadButton();
+    $reloadButton.addEventListener('click', function () {
+        window.location.reload();
+    });
 }
 
 // проверка значений здоровья на окончание игры
-function checkForEndGame() {
+function checkStateGame(damages) {
     switch (true) {
-        case player1.hp === 0 && player1.hp < player2.hp:
-            return showResult(player2.name);
-        case player2.hp === 0 && player2.hp < player1.hp:
-            return showResult(player1.name);
+        case damages.userDamage >= damages.enemyDamage:
+            showLogs('hit', player2, player1);
+            // showLogs('defence', player1, player2);
+            break;
+        case damages.userDamage <= damages.enemyDamage:
+            showLogs('hit', player1, player2);
+            // showLogs('defence', player2, player1);
+            break;
+    }
+
+    switch (true) {
         case player1.hp === 0 && player2.hp === 0:
-            return showResult();
+            showResult();
+            break;
+        case player1.hp === 0 && player2.hp > 0:
+            showResult(player2, player1);
+            break;
+        case player2.hp === 0 && player1.hp > 0:
+            showResult(player1, player2);
+            break;
     }
 }
 
@@ -226,9 +241,8 @@ $formFight.addEventListener('submit', function(event) {
     const user = getUserAttack();
     const enemy = getEnemyAttack();
     const damages = getPlayersDamages(user, enemy);
-    // showPlayersLogs(damages);
     showPlayersDamages(damages);
-    checkForEndGame();
+    checkStateGame(damages);
 });
 
 // отображение игроков
