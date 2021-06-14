@@ -1,7 +1,11 @@
+import { maxEndIndex, maxHitIndex, maxDefenceIndex, getLogString} from './logs.js';
+
 // ссылка на игровое поле
 const $arenas = document.querySelector('.arenas');
 // ссылка на форму
 const $formFight = document.querySelector('.control');
+//
+const $chat = document.querySelector('.chat');
 
 // предельные значения урона
 const HIT = {
@@ -14,31 +18,35 @@ const HIT = {
 const ATTACK = ['head', 'body', 'foot'];
 
 // объекты игроков
-const player1 = {
+const userPlayer = {
     player: 1,
     name: 'SCORPION',
     hp: 100,
+    lastDamage: 0,
     img: 'http://reactmarathon-api.herokuapp.com/assets/scorpion.gif',
     weapon: ['weapon1', 'weapon2', 'weapon3'],
     attack,
     changeHP,
     elHP,
-    renderHP
+    renderHP,
+    toStringHP
 };
 
-const player2 = {
+const enemyPlayer = {
     player: 2,
     name: 'SUB-ZERO',
     hp: 100,
+    lastDamage: 0,
     img: 'http://reactmarathon-api.herokuapp.com/assets/subzero.gif',
     weapon: ['weapon2', 'weapon3'],
     attack,
     changeHP,
     elHP,
-    renderHP
+    renderHP,
+    toStringHP
 };
 
-// атака
+// атака игрока
 function attack() {
     console.log(this.name + ' ' + 'Fight...');
 }
@@ -91,45 +99,29 @@ function getRandom(min = 1, max = 20) {
     return Math.trunc((Math.random() * (max - min)) + min);
 }
 
-// отображение результатов поединка
-function showResult(name) {
-    const $loseTitle = createElement('div', 'loseTitle');
-    if (name) {
-        $loseTitle.innerText = name + ' wins!';
-    } else {
-        $loseTitle.innerText = "It's a draw!";
-    }
-
-    $arenas.appendChild($loseTitle);
-
-    // кнопка Reload
-    const $reloadButton = createReloadButton();
-    $reloadButton.addEventListener('click', function () {
-        window.location.reload();
-    });
-}
-
-// определение элемента отображаещего кол-во здоровья
+// определение элемента отображаещего кол-во здоровья игрока
 function elHP() {
     const selector = `.player${this.player} .life`;
     return document.querySelector(selector);
 }
 
-// отображение количества здоровья
+// отображение количества здоровья игрока
 function renderHP() {
     const $life = this.elHP();
     $life.style.width = this.hp + '%';
 }
 
-// изменение количества здоровья
+// вывод здоровья игрока в форме [hp/100]
+function toStringHP() {
+ return `[${this.hp}/100]`;
+}
+
+// изменение количества здоровья игрока
 function changeHP(healthDamage) {
     const newHP = this.hp - healthDamage;
     this.hp = newHP < 0 ? 0 : newHP;
+    this.lastDamage = -healthDamage;
 }
-
-// отображение игроков
-$arenas.appendChild(createPlayer(player1));
-$arenas.appendChild(createPlayer(player2));
 
 // получение объекта вражеской атаки
 function getEnemyAttack() {
@@ -168,23 +160,85 @@ function getPlayersDamages(user, enemy) {
     return result;
 }
 
+// получение значения текущего времени
+function getCurrentTime() {
+    const zeroPrefix = value => value.toString().length > 1 ? value : `0${value}`;
+    const date = new Date();
+    return `${zeroPrefix(date.getHours())}:${zeroPrefix(date.getMinutes())}`;
+}
+
 // отображение результатов после единичн. атаки
 function showPlayersDamages(damages) {
-    player1.changeHP(damages.userDamage);
-    player2.changeHP(damages.enemyDamage);
-    player1.renderHP();
-    player2.renderHP();
+    userPlayer.changeHP(damages.userDamage);
+    enemyPlayer.changeHP(damages.enemyDamage);
+    userPlayer.renderHP();
+    enemyPlayer.renderHP();
+}
+
+// отображение логов игры
+function showLogs(type, attacker, defender) {
+    const time = getCurrentTime();
+
+    let index = 0;
+    switch (type) {
+        case 'end':
+            index = getRandom(index, maxEndIndex);
+            break;
+        case 'hit':
+            index = getRandom(index, maxHitIndex);
+            break;
+        case 'defence':
+            index = getRandom(index, maxDefenceIndex);
+            break;
+    }
+
+    const log = getLogString(type, index, time, attacker, defender);
+    const el = `<p>${log}</p>`;
+    $chat.insertAdjacentHTML('afterbegin', el);
+}
+
+// отображение результатов поединка
+function showResult(playerWinner, playerLoser) {
+    const $loseTitle = createElement('div', 'loseTitle');
+
+    // отображаем надпись с результатом
+    if (playerWinner) {
+        $loseTitle.innerText = playerWinner.name + ' wins!';
+        showLogs('end', playerWinner, playerLoser);
+    } else {
+        $loseTitle.innerText = "It's a draw!";
+        showLogs('draw', undefined, undefined);
+    }
+    $arenas.appendChild($loseTitle);
+
+    // кнопка Reload
+    const $reloadButton = createReloadButton();
+    $reloadButton.addEventListener('click', function () {
+        window.location.reload();
+    });
 }
 
 // проверка значений здоровья на окончание игры
-function checkForEndGame() {
+function checkStateGame(damages) {
     switch (true) {
-        case player1.hp === 0 && player1.hp < player2.hp:
-            return showResult(player2.name);
-        case player2.hp === 0 && player2.hp < player1.hp:
-            return showResult(player1.name);
-        case player1.hp === 0 && player2.hp === 0:
-            return showResult();
+        case damages.userDamage > damages.enemyDamage:
+            showLogs('hit', enemyPlayer, userPlayer);
+            break;
+        case damages.userDamage < damages.enemyDamage:
+            showLogs('hit', userPlayer, enemyPlayer);
+            break;
+    }
+
+    switch (true) {
+        case userPlayer.hp === 0 && enemyPlayer.hp === 0:
+            showResult();
+            break;
+        case userPlayer.hp === 0 && enemyPlayer.hp > 0:
+            showResult(enemyPlayer, userPlayer);
+            break;
+        case enemyPlayer.hp === 0 && userPlayer.hp > 0:
+            showResult(userPlayer, enemyPlayer);
+            break;
     }
 }
 
@@ -196,5 +250,11 @@ $formFight.addEventListener('submit', function(event) {
     const enemy = getEnemyAttack();
     const damages = getPlayersDamages(user, enemy);
     showPlayersDamages(damages);
-    checkForEndGame();
+    checkStateGame(damages);
 });
+
+// отображение игроков
+$arenas.appendChild(createPlayer(userPlayer));
+$arenas.appendChild(createPlayer(enemyPlayer));
+// начальная строка в лог
+showLogs('start', userPlayer, enemyPlayer);
