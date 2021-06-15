@@ -150,6 +150,7 @@ function getUserAttack() {
 // получение объекта конечных значений урона польз. и врага
 function getPlayersDamages(user, enemy) {
     const result = {};
+
     result.userDamage = user.defence !== enemy.target ? enemy.force : 0;
     result.enemyDamage = enemy.defence !== user.target ? user.force : 0;
 
@@ -172,7 +173,7 @@ function showPlayersDamages(damages) {
 }
 
 // отображение логов игры
-function showLogs(type, attacker, defender) {
+function showLog(type, attacker, defender) {
     const time = getCurrentTime();
 
     let index = 0;
@@ -185,6 +186,9 @@ function showLogs(type, attacker, defender) {
             break;
         case 'defence':
             index = getRandom(index, maxDefenceIndex);
+            break;
+        default:
+            index = 0;
             break;
     }
 
@@ -200,10 +204,10 @@ function showResult(playerWinner, playerLoser) {
     // отображаем надпись с результатом
     if (playerWinner) {
         $loseTitle.innerText = playerWinner.name + ' wins!';
-        showLogs('end', playerWinner, playerLoser);
+        showLog('end', playerWinner, playerLoser);
     } else {
         $loseTitle.innerText = "It's a draw!";
-        showLogs('draw', undefined, undefined);
+        showLog('draw', undefined, undefined);
     }
     $arenas.appendChild($loseTitle);
 
@@ -214,17 +218,24 @@ function showResult(playerWinner, playerLoser) {
     });
 }
 
-// проверка значений здоровья на окончание игры
-function checkStateGame(damages) {
-    switch (true) {
-        case damages.userDamage > damages.enemyDamage:
-            showLogs('hit', enemyPlayer, userPlayer);
-            break;
-        case damages.userDamage < damages.enemyDamage:
-            showLogs('hit', userPlayer, enemyPlayer);
-            break;
+// логирование урона и защиты игроков
+function selectPlayersDamagesLogs(damages) {
+    const types = ['hit', 'defence'];
+    if (damages.userDamage > 0) {
+        showLog(types[0], enemyPlayer, userPlayer);
+    } else {
+        showLog(types[1], enemyPlayer, userPlayer);
     }
 
+    if (damages.enemyDamage > 0) {
+        showLog(types[0], userPlayer, enemyPlayer);
+    } else {
+        showLog(types[1], userPlayer, enemyPlayer);
+    }
+}
+
+// проверка значений здоровья на окончание игры
+function checkEndGame() {
     switch (true) {
         case userPlayer.hp === 0 && enemyPlayer.hp === 0:
             showResult();
@@ -246,11 +257,12 @@ $formFight.addEventListener('submit', function(event) {
     const enemy = getEnemyAttack();
     const damages = getPlayersDamages(user, enemy);
     showPlayersDamages(damages);
-    checkStateGame(damages);
+    selectPlayersDamagesLogs(damages);
+    checkEndGame();
 });
 
 // отображение игроков
 $arenas.appendChild(createPlayer(userPlayer));
 $arenas.appendChild(createPlayer(enemyPlayer));
 // начальная строка в лог
-showLogs('start', userPlayer, enemyPlayer);
+showLog('start', userPlayer, enemyPlayer);
