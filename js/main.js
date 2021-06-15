@@ -148,11 +148,11 @@ function getUserAttack() {
 }
 
 // получение объекта конечных значений урона польз. и врага
-function getPlayersDamages(user, enemy) {
+function getPlayersDamages(userAttack, enemyAttack) {
     const result = {};
 
-    result.userDamage = user.defence !== enemy.target ? enemy.force : 0;
-    result.enemyDamage = enemy.defence !== user.target ? user.force : 0;
+    result.userDamage = userAttack.defence !== enemyAttack.target ? enemyAttack.force : 0;
+    result.enemyDamage = enemyAttack.defence !== userAttack.target ? userAttack.force : 0;
 
     return result;
 }
@@ -228,9 +228,9 @@ function checkEndGame() {
 $formFight.addEventListener('submit', function(event) {
     event.preventDefault();
 
-    const user = getUserAttack();
-    const enemy = getEnemyAttack();
-    const damages = getPlayersDamages(user, enemy);
+    const userAttack = getUserAttack();
+    const enemyAttack = getEnemyAttack();
+    const damages = getPlayersDamages(userAttack, enemyAttack);
     showPlayersDamages(damages);
     selectPlayersDamagesLogs(damages);
     checkEndGame();
