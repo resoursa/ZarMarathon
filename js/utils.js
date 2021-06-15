@@ -10,4 +10,4 @@ function getCurrentTime() {
     return `${zeroPrefix(date.getHours())}:${zeroPrefix(date.getMinutes())}`;
 }
 
-export {getRandom, getCurrentTime};
+export { getRandom, getCurrentTime };
