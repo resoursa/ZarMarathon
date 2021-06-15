@@ -21,6 +21,9 @@ const HIT = {
 // названия целей атак
 const ATTACK = ['head', 'body', 'foot'];
 
+// названия подтипов атаки
+const _subtypeAttacks = ['hit', 'defence'];
+
 // создание элемента для DOM
 function createElement(tag, className) {
     const $tag = document.createElement(tag);
@@ -76,18 +79,19 @@ function getEnemyAttack() {
 // получение объекта пользовательской атаки
 function getUserAttack() {
     const result = {};
-    for (const item of $formFight) {
+
+    [...$formFight].forEach(item => {
         if (item.checked) {
-            if (item.name === 'hit') {
+            if (item.name === _subtypeAttacks[0]) {
                 result.force = getRandom(1, HIT[item.value]);
                 result.target = item.value;
             }
-            if (item.name === 'defence') {
+            if (item.name === _subtypeAttacks[1]) {
                 result.defence = item.value;
             }
             item.checked = false;
         }
-    }
+    });
 
     return result;
 }
@@ -140,17 +144,16 @@ function showResult(playerWinner, playerLoser) {
 
 // логирование урона и защиты игроков
 function selectPlayersDamagesLogs({userDamage, enemyDamage}) {
-    const types = ['hit', 'defence'];
     if (userDamage > 0) {
-        showLog(types[0], _enemyPlayer, _userPlayer);
+        showLog(_subtypeAttacks[0], _enemyPlayer, _userPlayer);
     } else {
-        showLog(types[1], _enemyPlayer, _userPlayer);
+        showLog(_subtypeAttacks[1], _enemyPlayer, _userPlayer);
     }
 
     if (enemyDamage > 0) {
-        showLog(types[0], _userPlayer, _enemyPlayer);
+        showLog(_subtypeAttacks[0], _userPlayer, _enemyPlayer);
     } else {
-        showLog(types[1], _userPlayer, _enemyPlayer);
+        showLog(_subtypeAttacks[1], _userPlayer, _enemyPlayer);
     }
 }
 
