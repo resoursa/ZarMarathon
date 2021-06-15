@@ -1,4 +1,4 @@
-import getRandom from './utils.js';
+import { getRandom, getCurrentTime } from './utils.js';
 import { maxEndIndex, maxHitIndex, maxDefenceIndex, getLogString} from './logs.js';
 
 // ссылка на игровое поле
@@ -157,12 +157,12 @@ function getPlayersDamages(user, enemy) {
     return result;
 }
 
-// получение значения текущего времени
-function getCurrentTime() {
-    const zeroPrefix = value => value.toString().length > 1 ? value : `0${value}`;
-    const date = new Date();
-    return `${zeroPrefix(date.getHours())}:${zeroPrefix(date.getMinutes())}`;
-}
+// // получение значения текущего времени
+// function getCurrentTime() {
+//     const zeroPrefix = value => value.toString().length > 1 ? value : `0${value}`;
+//     const date = new Date();
+//     return `${zeroPrefix(date.getHours())}:${zeroPrefix(date.getMinutes())}`;
+// }
 
 // отображение результатов после единичн. атаки
 function showPlayersDamages(damages) {
