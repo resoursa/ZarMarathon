@@ -1,5 +1,5 @@
-import { getRandom, getCurrentTime } from './utils.js';
-import { maxEndIndex, maxHitIndex, maxDefenceIndex, getLogString} from './logs.js';
+import { getRandom } from './utils.js';
+import getLogString from './logs.js';
 
 // ссылка на игровое поле
 const $arenas = document.querySelector('.arenas');
@@ -157,13 +157,6 @@ function getPlayersDamages(user, enemy) {
     return result;
 }
 
-// // получение значения текущего времени
-// function getCurrentTime() {
-//     const zeroPrefix = value => value.toString().length > 1 ? value : `0${value}`;
-//     const date = new Date();
-//     return `${zeroPrefix(date.getHours())}:${zeroPrefix(date.getMinutes())}`;
-// }
-
 // отображение результатов после единичн. атаки
 function showPlayersDamages(damages) {
     userPlayer.changeHP(damages.userDamage);
@@ -172,27 +165,9 @@ function showPlayersDamages(damages) {
     enemyPlayer.renderHP();
 }
 
-// отображение логов игры
+// отображение записи лога игры
 function showLog(type, attacker, defender) {
-    const time = getCurrentTime();
-
-    let index = 0;
-    switch (type) {
-        case 'end':
-            index = getRandom(index, maxEndIndex);
-            break;
-        case 'hit':
-            index = getRandom(index, maxHitIndex);
-            break;
-        case 'defence':
-            index = getRandom(index, maxDefenceIndex);
-            break;
-        default:
-            index = 0;
-            break;
-    }
-
-    const log = getLogString(type, index, time, attacker, defender);
+    const log = getLogString(type, attacker, defender);
     const el = `<p>${log}</p>`;
     $chat.insertAdjacentHTML('afterbegin', el);
 }
