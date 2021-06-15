@@ -31,17 +31,17 @@ function createElement(tag, className) {
 }
 
 // создание игрока в DOM
-function createPlayer(playerObj) {
-    const $player = createElement('div', `player${playerObj.player}`);
+function createPlayer({player, hp, name, img}) {
+    const $player = createElement('div', `player${player}`);
     const $progressbar = createElement('div', 'progressbar');
     const $life = createElement('div', 'life');
     const $name = createElement('div', 'name');
     const $character = createElement('div', 'character');
     const $img = createElement('img');
 
-    $life.style.width = playerObj.hp + '%';
-    $name.innerText = playerObj.name;
-    $img.src = playerObj.img;
+    $life.style.width = hp + '%';
+    $name.innerText = name;
+    $img.src = img;
 
     $progressbar.appendChild($life);
     $progressbar.appendChild($name);
@@ -103,9 +103,9 @@ function getPlayersDamages(userAttack, enemyAttack) {
 }
 
 // отображение результатов после единичн. атаки
-function showPlayersDamages(damages) {
-    _userPlayer.changeHP(damages.userDamage);
-    _enemyPlayer.changeHP(damages.enemyDamage);
+function showPlayersDamages({userDamage, enemyDamage}) {
+    _userPlayer.changeHP(userDamage);
+    _enemyPlayer.changeHP(enemyDamage);
     _userPlayer.renderHP();
     _enemyPlayer.renderHP();
 }
@@ -139,15 +139,15 @@ function showResult(playerWinner, playerLoser) {
 }
 
 // логирование урона и защиты игроков
-function selectPlayersDamagesLogs(damages) {
+function selectPlayersDamagesLogs({userDamage, enemyDamage}) {
     const types = ['hit', 'defence'];
-    if (damages.userDamage > 0) {
+    if (userDamage > 0) {
         showLog(types[0], _enemyPlayer, _userPlayer);
     } else {
         showLog(types[1], _enemyPlayer, _userPlayer);
     }
 
-    if (damages.enemyDamage > 0) {
+    if (enemyDamage > 0) {
         showLog(types[0], _userPlayer, _enemyPlayer);
     } else {
         showLog(types[1], _userPlayer, _enemyPlayer);
