@@ -1,3 +1,4 @@
+import getRandom from './utils.js';
 import { maxEndIndex, maxHitIndex, maxDefenceIndex, getLogString} from './logs.js';
 
 // ссылка на игровое поле
@@ -92,11 +93,6 @@ function createReloadButton() {
     $arenas.appendChild($reloadWrap);
 
     return $button;
-}
-
-// получение значения урона здоровью игрока
-function getRandom(min = 1, max = 20) {
-    return Math.trunc((Math.random() * (max - min)) + min);
 }
 
 // определение элемента отображаещего кол-во здоровья игрока
