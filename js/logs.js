@@ -1,3 +1,5 @@
+import { getRandom, getCurrentTime } from './utils.js';
+
 const logs = {
     start: 'Часы показывали [time], когда [player1] и [player2] бросили вызов друг другу.',
     end: [
@@ -70,20 +72,25 @@ function getDefenceLog(type, index, time, attacker, defender) {
 }
 
 // формирование строки лога для отображения
-function getLogString(type, index, time, attacker, defender) {
+function getLogString(type, attacker, defender) {
     let result = '';
+    let index = 0;
+    const time = getCurrentTime();
 
     switch (type) {
         case 'start':
             result = getStartLog(type, time, attacker, defender);
             break;
         case 'end':
+            index = getRandom(index, maxEndIndex)
             result = getEndLog(type, index, attacker, defender);
             break;
         case 'hit':
+            index = getRandom(index, maxHitIndex);
             result = getHitLog(type, index, time, attacker, defender);
             break;
         case 'defence':
+            index = getRandom(index, maxDefenceIndex);
             result = getDefenceLog(type, index, time, attacker, defender);
             break;
         case 'draw':
@@ -97,4 +104,4 @@ function getLogString(type, index, time, attacker, defender) {
     return result;
 }
 
-export { maxEndIndex, maxHitIndex, maxDefenceIndex, getLogString};
+export default getLogString;
