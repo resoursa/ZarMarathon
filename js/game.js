@@ -1,4 +1,5 @@
 import { getRandom, createElement } from './utils.js';
+import { HIT, ATTACK, ACTIVITIES } from './consts.js';
 import getLogString from './logs.js';
 
 // игроки
@@ -10,19 +11,6 @@ const $arenas = document.querySelector('.arenas');
 const $formFight = document.querySelector('.control');
 // ссылка на отображение логов
 const $chat = document.querySelector('.chat');
-
-// предельные значения урона
-const HIT = {
-    head: 30,
-    body: 25,
-    foot: 20,
-};
-
-// названия целей атак
-const ATTACK = ['head', 'body', 'foot'];
-
-// названия подтипов атаки
-const _subtypeAttacks = ['hit', 'defence'];
 
 // создание кнопки Reload
 function createReloadButton() {
@@ -51,11 +39,11 @@ function getUserAttack() {
 
     [...$formFight].forEach(item => {
         if (item.checked) {
-            if (item.name === _subtypeAttacks[0]) {
+            if (item.name === ACTIVITIES.hit) {
                 result.force = getRandom(1, HIT[item.value]);
                 result.target = item.value;
             }
-            if (item.name === _subtypeAttacks[1]) {
+            if (item.name === ACTIVITIES.defence) {
                 result.defence = item.value;
             }
             item.checked = false;
@@ -114,15 +102,15 @@ function showResult(playerWinner, playerLoser) {
 // логирование урона и защиты игроков
 function selectPlayersDamagesLogs({userDamage, enemyDamage}) {
     if (userDamage > 0) {
-        showLog(_subtypeAttacks[0], _enemyPlayer, _userPlayer);
+        showLog(ACTIVITIES.hit, _enemyPlayer, _userPlayer);
     } else {
-        showLog(_subtypeAttacks[1], _enemyPlayer, _userPlayer);
+        showLog(ACTIVITIES.defence, _enemyPlayer, _userPlayer);
     }
 
     if (enemyDamage > 0) {
-        showLog(_subtypeAttacks[0], _userPlayer, _enemyPlayer);
+        showLog(ACTIVITIES.hit, _userPlayer, _enemyPlayer);
     } else {
-        showLog(_subtypeAttacks[1], _userPlayer, _enemyPlayer);
+        showLog(ACTIVITIES.defence, _userPlayer, _enemyPlayer);
     }
 }
 
