@@ -1,11 +1,9 @@
 // получение случайного значения в нужном интервале
-function getRandom(min = 1, max = 20) {
-    return Math.trunc((Math.random() * (max - min)) + min);
-}
+const getRandom = (min = 1, max = 20) => Math.trunc((Math.random() * (max - min)) + min);
 
+const zeroPrefix = value => value.toString().length > 1 ? value : `0${value}`;
 // получение значения текущего времени
-function getCurrentTime() {
-    const zeroPrefix = value => value.toString().length > 1 ? value : `0${value}`;
+const getCurrentTime = () => {
     const date = new Date();
     return `${zeroPrefix(date.getHours())}:${zeroPrefix(date.getMinutes())}`;
 }
