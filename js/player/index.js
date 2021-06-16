@@ -1,3 +1,5 @@
+import { createElement } from '../utils.js';
+
 class Player {
     constructor(player, name, img) {
         this.player = player;
@@ -6,10 +8,10 @@ class Player {
 
         this.hp = 100;
         this.lastDamage = 0;
-        this.selector = `.player${this.player}`;
+        this.selector = `player${this.player}`;
     }
     _getElementHP = () => {
-        const selector = `${this.selector} .life`;
+        const selector = `.${this.selector} .life`;
         return document.querySelector(selector);
     };
     renderHP = () => {
@@ -21,6 +23,26 @@ class Player {
         const newHP = this.hp - healthDamage;
         this.hp = newHP < 0 ? 0 : newHP;
         this.lastDamage = -healthDamage;
+    };
+    renderSelfOn = ($place) => {
+        const $player = createElement('div', this.selector);
+        const $progressbar = createElement('div', 'progressbar');
+        const $life = createElement('div', 'life');
+        const $name = createElement('div', 'name');
+        const $character = createElement('div', 'character');
+        const $img = createElement('img');
+
+        $life.style.width = this.hp + '%';
+        $name.innerText = this.name;
+        $img.src = this.img;
+
+        $progressbar.appendChild($life);
+        $progressbar.appendChild($name);
+        $character.appendChild($img);
+        $player.appendChild($progressbar);
+        $player.appendChild($character);
+
+        $place.appendChild($player);
     };
 }
 

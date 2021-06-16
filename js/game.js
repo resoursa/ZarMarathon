@@ -24,28 +24,6 @@ const ATTACK = ['head', 'body', 'foot'];
 // названия подтипов атаки
 const _subtypeAttacks = ['hit', 'defence'];
 
-// создание игрока в DOM
-function createPlayer({player, hp, name, img}) {
-    const $player = createElement('div', `player${player}`);
-    const $progressbar = createElement('div', 'progressbar');
-    const $life = createElement('div', 'life');
-    const $name = createElement('div', 'name');
-    const $character = createElement('div', 'character');
-    const $img = createElement('img');
-
-    $life.style.width = hp + '%';
-    $name.innerText = name;
-    $img.src = img;
-
-    $progressbar.appendChild($life);
-    $progressbar.appendChild($name);
-    $character.appendChild($img);
-    $player.appendChild($progressbar);
-    $player.appendChild($character);
-
-    return $player;
-}
-
 // создание кнопки Reload
 function createReloadButton() {
     const $reloadWrap = createElement('div', 'reloadWrap');
@@ -168,11 +146,12 @@ function startFight(userPlayer, enemyPlayer) {
     _userPlayer = userPlayer;
     _enemyPlayer = enemyPlayer;
 
-    $arenas.appendChild(createPlayer(_userPlayer));
-    $arenas.appendChild(createPlayer(_enemyPlayer));
+    // отображаем игроков
+    _userPlayer.renderSelfOn($arenas);
+    _enemyPlayer.renderSelfOn($arenas);
 
     // начальная строка в лог
-    showLog('start', userPlayer, enemyPlayer);
+    showLog('start', _userPlayer, _enemyPlayer);
 }
 
 // обработчик для кнопки Fight
