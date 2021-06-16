@@ -8,4 +8,13 @@ const getCurrentTime = () => {
     return `${zeroPrefix(date.getHours())}:${zeroPrefix(date.getMinutes())}`;
 }
 
-export { getRandom, getCurrentTime };
+// создание элемента для DOM
+function createElement(tag, className) {
+    const $tag = document.createElement(tag);
+    if (className) {
+        $tag.classList.add(className);
+    }
+    return $tag;
+}
+
+export { getRandom, getCurrentTime, createElement };

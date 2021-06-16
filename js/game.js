@@ -1,4 +1,4 @@
-import { getRandom } from './utils.js';
+import { getRandom, createElement } from './utils.js';
 import getLogString from './logs.js';
 
 // игроки
@@ -23,15 +23,6 @@ const ATTACK = ['head', 'body', 'foot'];
 
 // названия подтипов атаки
 const _subtypeAttacks = ['hit', 'defence'];
-
-// создание элемента для DOM
-function createElement(tag, className) {
-    const $tag = document.createElement(tag);
-    if (className) {
-        $tag.classList.add(className);
-    }
-    return $tag;
-}
 
 // создание игрока в DOM
 function createPlayer({player, hp, name, img}) {
