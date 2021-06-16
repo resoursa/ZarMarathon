@@ -1,5 +1,5 @@
-import { userPlayer, enemyPlayer } from './players.js';
-import { startFight, onSubmit, showLog } from './game.js';
+import { PlayerNames, PlayerFactory } from './player/index.js';
+import { startFight, onSubmit } from './game.js';
 
 // ссылка на форму
 const $formFight = document.querySelector('.control');
@@ -11,6 +11,8 @@ $formFight.addEventListener('submit', function(event) {
 });
 
 // отображение игроков
+const factory = new PlayerFactory();
+const userPlayer = factory.create(1, PlayerNames.scorpion);
+const enemyPlayer = factory.create(2, PlayerNames.subzero);
 startFight(userPlayer, enemyPlayer);
-// начальная строка в лог
-showLog('start', userPlayer, enemyPlayer);
+

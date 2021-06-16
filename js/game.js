@@ -179,6 +179,9 @@ function startFight(userPlayer, enemyPlayer) {
 
     $arenas.appendChild(createPlayer(_userPlayer));
     $arenas.appendChild(createPlayer(_enemyPlayer));
+
+    // начальная строка в лог
+    showLog('start', userPlayer, enemyPlayer);
 }
 
 // обработчик для кнопки Fight
