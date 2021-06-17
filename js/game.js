@@ -1,5 +1,5 @@
 import { getRandom, createElement } from './utils.js';
-import { HIT, ATTACK, ACTIVITIES } from './consts.js';
+import { HIT, ATTACK, ACTIVITY } from './consts.js';
 import getLogString from './logs.js';
 
 // игроки
@@ -39,11 +39,11 @@ function getUserAttack() {
 
     [...$formFight].forEach(item => {
         if (item.checked) {
-            if (item.name === ACTIVITIES.hit) {
+            if (item.name === ACTIVITY.hit) {
                 result.force = getRandom(1, HIT[item.value]);
                 result.target = item.value;
             }
-            if (item.name === ACTIVITIES.defence) {
+            if (item.name === ACTIVITY.defence) {
                 result.defence = item.value;
             }
             item.checked = false;
@@ -102,15 +102,15 @@ function showResult(playerWinner, playerLoser) {
 // логирование урона и защиты игроков
 function selectPlayersDamagesLogs({userDamage, enemyDamage}) {
     if (userDamage > 0) {
-        showLog(ACTIVITIES.hit, _enemyPlayer, _userPlayer);
+        showLog(ACTIVITY.hit, _enemyPlayer, _userPlayer);
     } else {
-        showLog(ACTIVITIES.defence, _enemyPlayer, _userPlayer);
+        showLog(ACTIVITY.defence, _enemyPlayer, _userPlayer);
     }
 
     if (enemyDamage > 0) {
-        showLog(ACTIVITIES.hit, _userPlayer, _enemyPlayer);
+        showLog(ACTIVITY.hit, _userPlayer, _enemyPlayer);
     } else {
-        showLog(ACTIVITIES.defence, _userPlayer, _enemyPlayer);
+        showLog(ACTIVITY.defence, _userPlayer, _enemyPlayer);
     }
 }
 

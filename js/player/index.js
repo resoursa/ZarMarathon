@@ -46,14 +46,6 @@ class Player {
     };
 }
 
-class PlayerNames {
-    static scorpion = 'scorpion';
-    static kitana = 'kitana';
-    static liukang = 'liukang';
-    static sonya = 'sonya';
-    static subzero = 'subzero';
-}
-
 class PlayerFactory {
     create(player, name) {
         switch (name) {
@@ -88,4 +80,4 @@ class PlayerFactory {
     }
 }
 
-export { PlayerNames, PlayerFactory };
+export { Player, PlayerFactory };
