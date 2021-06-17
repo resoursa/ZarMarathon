@@ -1,4 +1,4 @@
-import { PlayerFactory } from './player/index.js';
+import { PlayerFactory } from './player.js';
 import { POSITION, PLAYER_NAME } from './consts.js';
 import { startFight, onSubmit } from './game.js';
 

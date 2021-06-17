@@ -1,4 +1,4 @@
-import { createElement } from '../utils.js';
+import { createElement } from './utils.js';
 
 class Player {
     constructor(player, name, img) {
