@@ -1,12 +1,12 @@
 import { createElement } from './utils.js';
 
 class Player {
-    constructor(player, name, img) {
+    constructor(player, name, img, hp, avatar) {
         this.player = player;
         this.name = name;
         this.img = img;
-
-        this.hp = 100;
+        this.hp = hp || 100;
+        this.avatar = avatar || '';
         this.lastDamage = 0;
         this.selector = `player${this.player}`;
     }
