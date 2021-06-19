@@ -118,10 +118,12 @@ class Game {
         }
     };
 
-    _onSubmit() {
+    _onSubmit = async () => {
         const userAttack = this._getUserAttack();
-        const enemyAttack = this._getEnemyAttack();
-        const damages = this._getPlayersDamages(userAttack, enemyAttack);
+        // const enemyAttack = this._getEnemyAttack();
+        const fightAttacks = await this._dataService.getAttacks(userAttack);
+
+        const damages = this._getPlayersDamages(fightAttacks.userAttack, fightAttacks.enemyAttack);
         this._showPlayersDamages(damages);
         this._selectPlayersDamagesLogs(damages);
         this._checkEndGame();
@@ -143,9 +145,9 @@ class Game {
         this._showLog('start', this._userPlayer, this._enemyPlayer);
 
         // кнопка Fight
-        this.$formFight.addEventListener('submit', (event) => {
+        this.$formFight.addEventListener('submit', async (event) => {
             event.preventDefault();
-            this._onSubmit();
+            await this._onSubmit();
         });
     };
 }

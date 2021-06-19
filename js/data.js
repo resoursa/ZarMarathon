@@ -45,12 +45,12 @@ class DataService {
 
     _mapToAttacks = (answer) => {
        return {
-           userPlayer: {
+           userAttack: {
                force: answer.player1.value,
                target: answer.player1.hit,
                defence: answer.player1.defence
            },
-           enemyPlayer: {
+           enemyAttack: {
                force: answer.player2.value,
                target: answer.player2.hit,
                defence: answer.player2.defence
@@ -58,8 +58,8 @@ class DataService {
        };
     };
 
-    getAttacks = async (attack) => {
-        const jsonAnswer = await this._postJson(DataService._urlFight, attack);
+    getAttacks = async (userAttack) => {
+        const jsonAnswer = await this._postJson(DataService._urlFight, userAttack);
         const attacks = this._mapToAttacks(jsonAnswer);
         return attacks;
     };
