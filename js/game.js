@@ -1,7 +1,6 @@
-import { getRandom, createElement } from './utils.js';
-import { POSITION, PLAYER_NAME, HIT, ATTACK, ACTIVITY } from './consts.js';
+import { createElement } from './utils.js';
+import { POSITION, ACTIVITY } from './consts.js';
 import getLogString from './logs.js';
-import { PlayerFactory } from './player.js';
 import DataService from './data.js';
 
 class Game {
@@ -51,12 +50,11 @@ class Game {
         return $button;
     };
 
-    _getUserAttack = () => {
+    _getUserSelection = () => {
         const result = {};
         [...this.$formFight].forEach(item => {
             if (item.checked) {
                 if (item.name === ACTIVITY.hit) {
-                    result.force = getRandom(1, HIT[item.value]);
                     result.target = item.value;
                 }
                 if (item.name === ACTIVITY.defence) {
@@ -66,14 +64,6 @@ class Game {
             }
         });
         return result;
-    };
-
-    _getEnemyAttack = () => {
-        const target = ATTACK[getRandom(0, 3)];
-        const defence = ATTACK[getRandom(0, 3)];
-        const force = getRandom(1, HIT[target]);
-
-        return { force, target, defence };
     };
 
     _getPlayersDamages = (userAttack, enemyAttack) => {
@@ -119,9 +109,8 @@ class Game {
     };
 
     _onSubmit = async () => {
-        const userAttack = this._getUserAttack();
-        // const enemyAttack = this._getEnemyAttack();
-        const fightAttacks = await this._dataService.getAttacks(userAttack);
+        const userSelection = this._getUserSelection();
+        const fightAttacks = await this._dataService.getAttacks(userSelection);
 
         const damages = this._getPlayersDamages(fightAttacks.userAttack, fightAttacks.enemyAttack);
         this._showPlayersDamages(damages);
@@ -130,12 +119,8 @@ class Game {
     };
 
     start = async () => {
-        // const factory = new PlayerFactory();
-        // this._userPlayer = factory.create(POSITION.left, PLAYER_NAME.scorpion);
-        // this._enemyPlayer = factory.create(POSITION.right, PLAYER_NAME.subzero);
         this._userPlayer = await this._dataService.getRandomPlayer(POSITION.left);
         this._enemyPlayer = await this._dataService.getRandomPlayer(POSITION.right);
-
 
         // отображаем игроков
         this._userPlayer.renderSelfOn(this.$arenas);
