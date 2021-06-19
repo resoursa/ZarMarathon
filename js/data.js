@@ -12,15 +12,15 @@ class DataService {
             .catch(console.error);
     };
 
-    _mapToPlayer = (jsonItem) => {
-        const player = new Player(
-            1,
+    _mapToPlayer = (jsonItem, player) => {
+        const result = new Player(
+            player,
             jsonItem.name,
             jsonItem.img,
             jsonItem.hp,
             jsonItem.avatar
         );
-        return player;
+        return result;
     };
 
     getAllPlayers = async _ => {
@@ -29,10 +29,10 @@ class DataService {
         return players;
     };
 
-    getRandomPlayer = async _ => {
+    getRandomPlayer = async (player = 1) => {
         const jsonItem = await this._getJson(DataService._urlRandom);
-        const player = this._mapToPlayer(jsonItem);
-        return player;
+        const result = this._mapToPlayer(jsonItem, player);
+        return result;
     };
 
     _postJson = async (url, attack) => {

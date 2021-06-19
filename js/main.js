@@ -1,8 +1,8 @@
 import Game from './game.js';
-import DataService from './data.js';
+// import DataService from './data.js';
 
 
-const ds = new DataService();
+// const ds = new DataService();
 
 // const player = await ds.getRandomPlayer();
 // console.log(player);
@@ -10,10 +10,10 @@ const ds = new DataService();
 // const players = await ds.getAllPlayers();
 // console.table(players);
 
-const attack = {target: 'foot', defence: 'foot'};
-const attacks = await ds.getAttacks(attack);
-console.log(attacks);
+// const attack = {target: 'foot', defence: 'foot'};
+// const attacks = await ds.getAttacks(attack);
+// console.log(attacks);
 
 
 const game = new Game();
-game.start();
+await game.start();

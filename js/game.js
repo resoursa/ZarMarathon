@@ -2,6 +2,7 @@ import { getRandom, createElement } from './utils.js';
 import { POSITION, PLAYER_NAME, HIT, ATTACK, ACTIVITY } from './consts.js';
 import getLogString from './logs.js';
 import { PlayerFactory } from './player.js';
+import DataService from './data.js';
 
 class Game {
     constructor(){
@@ -10,8 +11,9 @@ class Game {
         this.$chat = document.querySelector('.chat');
         this._userPlayer = null;
         this._enemyPlayer = null;
+        this._dataService = new DataService();
     }
-    
+
     _showLog = (type, attacker, defender) => {
         const log = getLogString(type, attacker, defender);
         const el = `<p>${log}</p>`;
@@ -125,10 +127,13 @@ class Game {
         this._checkEndGame();
     };
 
-    start = () => {
-        const factory = new PlayerFactory();
-        this._userPlayer = factory.create(POSITION.left, PLAYER_NAME.scorpion);
-        this._enemyPlayer = factory.create(POSITION.right, PLAYER_NAME.subzero);
+    start = async () => {
+        // const factory = new PlayerFactory();
+        // this._userPlayer = factory.create(POSITION.left, PLAYER_NAME.scorpion);
+        // this._enemyPlayer = factory.create(POSITION.right, PLAYER_NAME.subzero);
+        this._userPlayer = await this._dataService.getRandomPlayer(POSITION.left);
+        this._enemyPlayer = await this._dataService.getRandomPlayer(POSITION.right);
+
 
         // отображаем игроков
         this._userPlayer.renderSelfOn(this.$arenas);
