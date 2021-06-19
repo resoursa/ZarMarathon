@@ -115,15 +115,18 @@ class Game {
         const fightAttacks = await this._dataService.getAttacks(userSelection);
         // вычисляем урон
         const damages = this._getPlayersDamages(fightAttacks.userAttack, fightAttacks.enemyAttack);
-        
+
         this._showPlayersDamages(damages);
         this._selectPlayersDamagesLogs(damages);
         this._checkEndGame();
     };
 
     start = async () => {
-        // получаем игроков с сервера
-        this._userPlayer = await this._dataService.getRandomPlayer(POSITION.left);
+        // получаем игрока для пользователя
+        const selectedPlayer = JSON.parse(localStorage.getItem('player1'));
+        this._userPlayer = await this._dataService.getUserPlayer(POSITION.left, selectedPlayer.img);
+
+        // получаем игрока противника с сервера
         this._enemyPlayer = await this._dataService.getRandomPlayer(POSITION.right);
 
         // отображаем игроков

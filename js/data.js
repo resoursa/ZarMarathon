@@ -64,6 +64,13 @@ class DataService {
         return attacks;
     };
 
+    getUserPlayer = async (player, img) => {
+        const players = await this.getAllPlayers();
+        const result = players.find(p => p.img === img);
+        result.setPlayer(player);
+        return result;
+    };
+
 }
 
 export default DataService;

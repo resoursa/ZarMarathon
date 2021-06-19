@@ -10,20 +10,30 @@ class Player {
         this.lastDamage = 0;
         this.selector = `player${this.player}`;
     }
+
+    setPlayer = (player) => {
+        this.player = player;
+        this.selector = `player${this.player}`;
+    };
+
     _getElementHP = () => {
         const selector = `.${this.selector} .life`;
         return document.querySelector(selector);
     };
+
     renderHP = () => {
         const $life = this._getElementHP();
         $life.style.width = this.hp + '%';
     };
+
     toStringHP = () => `[${this.hp}/100]`;
+
     changeHP = (healthDamage) => {
         const newHP = this.hp - healthDamage;
         this.hp = newHP < 0 ? 0 : newHP;
         this.lastDamage = -healthDamage;
     };
+    
     renderSelfOn = ($place) => {
         const $player = createElement('div', this.selector);
         const $progressbar = createElement('div', 'progressbar');
