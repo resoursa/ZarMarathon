@@ -35,7 +35,7 @@ class Game {
         // кнопка Reload
         const $reloadButton = this._createReloadButton();
         $reloadButton.addEventListener('click', function () {
-            window.location.reload();
+            window.location.pathname = './index.html';
         });
     };
 
