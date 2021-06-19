@@ -9,7 +9,7 @@ class DataService {
     _getJson = async (url) => {
         return fetch(url)
             .then(data => data.json())
-            .catch(err => console.error(err));
+            .catch(console.error);
     };
 
     _mapToPlayer = (jsonItem) => {
@@ -35,8 +35,33 @@ class DataService {
         return player;
     };
 
-    getFightStep = ({ hit, defence }) => {
+    _postJson = async (url, attack) => {
+        const body = JSON.stringify({hit: attack.target, defence: attack.defence});
+        const options = {method: 'POST', body};
+        return fetch(url, options)
+                .then(data => data.json())
+                .catch(console.error);
+    }
 
+    _mapToAttacks = (answer) => {
+       return {
+           userPlayer: {
+               force: answer.player1.value,
+               target: answer.player1.hit,
+               defence: answer.player1.defence
+           },
+           enemyPlayer: {
+               force: answer.player2.value,
+               target: answer.player2.hit,
+               defence: answer.player2.defence
+           }
+       };
+    };
+
+    getAttacks = async (attack) => {
+        const jsonAnswer = await this._postJson(DataService._urlFight, attack);
+        const attacks = this._mapToAttacks(jsonAnswer);
+        return attacks;
     };
 
 }
