@@ -109,16 +109,20 @@ class Game {
     };
 
     _onSubmit = async () => {
+        // получем выбор пользователя
         const userSelection = this._getUserSelection();
+        // получаем с сервера параметры атак для пользователя и соперника
         const fightAttacks = await this._dataService.getAttacks(userSelection);
-
+        // вычисляем урон
         const damages = this._getPlayersDamages(fightAttacks.userAttack, fightAttacks.enemyAttack);
+        
         this._showPlayersDamages(damages);
         this._selectPlayersDamagesLogs(damages);
         this._checkEndGame();
     };
 
     start = async () => {
+        // получаем игроков с сервера
         this._userPlayer = await this._dataService.getRandomPlayer(POSITION.left);
         this._enemyPlayer = await this._dataService.getRandomPlayer(POSITION.right);
 
