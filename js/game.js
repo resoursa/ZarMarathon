@@ -1,7 +1,7 @@
-import { getRandom, createElement } from './utils.js';
-import { POSITION, PLAYER_NAME, HIT, ATTACK, ACTIVITY } from './consts.js';
+import { createElement } from './utils.js';
+import { POSITION, ACTIVITY } from './consts.js';
 import getLogString from './logs.js';
-import { PlayerFactory } from './player.js';
+import DataService from './data.js';
 
 class Game {
     constructor(){
@@ -10,8 +10,9 @@ class Game {
         this.$chat = document.querySelector('.chat');
         this._userPlayer = null;
         this._enemyPlayer = null;
+        this._dataService = new DataService();
     }
-    
+
     _showLog = (type, attacker, defender) => {
         const log = getLogString(type, attacker, defender);
         const el = `<p>${log}</p>`;
@@ -34,7 +35,7 @@ class Game {
         // кнопка Reload
         const $reloadButton = this._createReloadButton();
         $reloadButton.addEventListener('click', function () {
-            window.location.reload();
+            window.location.pathname = './index.html';
         });
     };
 
@@ -49,12 +50,11 @@ class Game {
         return $button;
     };
 
-    _getUserAttack = () => {
+    _getUserSelection = () => {
         const result = {};
         [...this.$formFight].forEach(item => {
             if (item.checked) {
                 if (item.name === ACTIVITY.hit) {
-                    result.force = getRandom(1, HIT[item.value]);
                     result.target = item.value;
                 }
                 if (item.name === ACTIVITY.defence) {
@@ -64,14 +64,6 @@ class Game {
             }
         });
         return result;
-    };
-
-    _getEnemyAttack = () => {
-        const target = ATTACK[getRandom(0, 3)];
-        const defence = ATTACK[getRandom(0, 3)];
-        const force = getRandom(1, HIT[target]);
-
-        return { force, target, defence };
     };
 
     _getPlayersDamages = (userAttack, enemyAttack) => {
@@ -116,19 +108,26 @@ class Game {
         }
     };
 
-    _onSubmit() {
-        const userAttack = this._getUserAttack();
-        const enemyAttack = this._getEnemyAttack();
-        const damages = this._getPlayersDamages(userAttack, enemyAttack);
+    _onSubmit = async () => {
+        // получем выбор пользователя
+        const userSelection = this._getUserSelection();
+        // получаем с сервера параметры атак для пользователя и соперника
+        const fightAttacks = await this._dataService.getAttacks(userSelection);
+        // вычисляем урон
+        const damages = this._getPlayersDamages(fightAttacks.userAttack, fightAttacks.enemyAttack);
+
         this._showPlayersDamages(damages);
         this._selectPlayersDamagesLogs(damages);
         this._checkEndGame();
     };
 
-    start = () => {
-        const factory = new PlayerFactory();
-        this._userPlayer = factory.create(POSITION.left, PLAYER_NAME.scorpion);
-        this._enemyPlayer = factory.create(POSITION.right, PLAYER_NAME.subzero);
+    start = async () => {
+        // получаем игрока для пользователя
+        const selectedPlayer = JSON.parse(localStorage.getItem('player1'));
+        this._userPlayer = await this._dataService.getUserPlayer(POSITION.left, selectedPlayer.img);
+
+        // получаем игрока противника с сервера
+        this._enemyPlayer = await this._dataService.getRandomPlayer(POSITION.right);
 
         // отображаем игроков
         this._userPlayer.renderSelfOn(this.$arenas);
@@ -138,9 +137,9 @@ class Game {
         this._showLog('start', this._userPlayer, this._enemyPlayer);
 
         // кнопка Fight
-        this.$formFight.addEventListener('submit', (event) => {
+        this.$formFight.addEventListener('submit', async (event) => {
             event.preventDefault();
-            this._onSubmit();
+            await this._onSubmit();
         });
     };
 }
